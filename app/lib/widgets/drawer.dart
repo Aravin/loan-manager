@@ -3,7 +3,7 @@ import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/user.dart';
 
 class AppDrawer extends StatefulWidget {
-  final User loggedUser;
+  final AppUser loggedUser;
 
   const AppDrawer({Key key, this.loggedUser}) : super(key: key);
   @override

@@ -7,6 +7,7 @@ import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class AddLoan extends StatefulWidget {
   @override
@@ -16,14 +17,14 @@ class AddLoan extends StatefulWidget {
 class _AddLoanState extends State<AddLoan> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
-  User loggedUser;
+  AppUser loggedUser;
 
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
     print(user);
     if (user != null) {
-      this.loggedUser = User.fromJson(jsonDecode(user));
+      this.loggedUser = AppUser.fromJson(jsonDecode(user));
     }
   }
 
@@ -46,10 +47,7 @@ class _AddLoanState extends State<AddLoan> {
           Expanded(
             child: FormBuilder(
               key: _fbKey,
-              initialValue: {
-                'date': DateTime.now(),
-                'accept_terms': false,
-              },
+              initialValue: {},
               autovalidate: false,
               child: Column(
                 children: <Widget>[
@@ -73,8 +71,11 @@ class _AddLoanState extends State<AddLoan> {
                               children: [
                                 FormBuilderDropdown(
                                   attribute: "loanType",
-                                  decoration:
-                                      InputDecoration(labelText: "Loan Type"),
+                                  decoration: InputDecoration(
+                                    labelText: "Loan Type",
+                                    prefixIcon: Icon(
+                                        MaterialCommunityIcons.account_search),
+                                  ),
                                   // initialValue: 'Male',
                                   hint: Text('Loan Type'),
                                   validators: [
@@ -97,15 +98,23 @@ class _AddLoanState extends State<AddLoan> {
                                   attribute: "accountName",
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Account's Nick Name"),
-                                  validators: [],
+                                    labelText: "Account's Nick Name",
+                                    prefixIcon: Icon(AntDesign.idcard),
+                                  ),
+                                  validators: [
+                                    FormBuilderValidators.minLength(2),
+                                    FormBuilderValidators.maxLength(25),
+                                  ],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "amount",
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Principal Loan Amount"),
+                                    labelText: "Principal Loan Amount",
+                                    prefixIcon: Icon(FontAwesome.money),
+                                  ),
                                   validators: [
+                                    FormBuilderValidators.required(),
                                     FormBuilderValidators.numeric(),
                                     FormBuilderValidators.min(500),
                                     FormBuilderValidators.max(10000000),
@@ -141,7 +150,12 @@ class _AddLoanState extends State<AddLoan> {
                                   inputType: InputType.date,
                                   format: DateFormat("dd-MMM-yyyy"),
                                   decoration: InputDecoration(
-                                      labelText: "Loan Start Date"),
+                                    labelText: "Loan Start Date",
+                                    prefixIcon: Icon(Icons.calendar_today),
+                                  ),
+                                  validators: [
+                                    FormBuilderValidators.required(),
+                                  ],
                                 ),
                               ],
                             ),
@@ -150,37 +164,52 @@ class _AddLoanState extends State<AddLoan> {
                               children: [
                                 FormBuilderTextField(
                                   attribute: "bankAccountNumber",
+                                  keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Bank Account Number"),
+                                    labelText: "Bank Account Number",
+                                    prefixIcon: Icon(
+                                        MaterialCommunityIcons.sort_numeric),
+                                  ),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "bankName",
+                                  keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
-                                  decoration:
-                                      InputDecoration(labelText: "Bank Name"),
+                                  decoration: InputDecoration(
+                                      labelText: "Bank Name",
+                                      prefixIcon:
+                                          Icon(MaterialCommunityIcons.bank)),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "bankPhoneNumber",
+                                  keyboardType: TextInputType.phone,
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Bank Phone Number"),
+                                    labelText: "Bank Phone Number",
+                                    prefixIcon: Icon(Icons.phone),
+                                  ),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "bankEmail",
+                                  keyboardType: TextInputType.emailAddress,
                                   textInputAction: TextInputAction.next,
-                                  decoration:
-                                      InputDecoration(labelText: "Bank Email"),
+                                  decoration: InputDecoration(
+                                    labelText: "Bank Email",
+                                    prefixIcon: Icon(Icons.email),
+                                  ),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "bankContactPerson",
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Contact Person"),
+                                    labelText: "Contact Person",
+                                    prefixIcon: Icon(Icons.contacts),
+                                  ),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
@@ -189,7 +218,9 @@ class _AddLoanState extends State<AddLoan> {
                                   attribute: "bankAdditionalInfo",
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
-                                      labelText: "Additional Info"),
+                                    labelText: "Additional Info",
+                                    prefixIcon: Icon(Icons.more),
+                                  ),
                                   validators: [],
                                 ),
                               ],
@@ -199,23 +230,46 @@ class _AddLoanState extends State<AddLoan> {
                               children: [
                                 FormBuilderTextField(
                                   attribute: "loanProcessingFee",
+                                  keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Loan Processing Fee"),
-                                  validators: [],
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "loanPartPayment",
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                      labelText: "Loan Part Payment"),
+                                    labelText: "Loan Processing Fee",
+                                    prefixIcon:
+                                        Icon(MaterialCommunityIcons.minus_box),
+                                  ),
                                   validators: [],
                                 ),
                                 FormBuilderTextField(
                                   attribute: "loanOtherCharges",
+                                  keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
-                                      labelText: "Other Loan Charges"),
+                                    labelText: "Other Loan Charges",
+                                    prefixIcon:
+                                        Icon(MaterialCommunityIcons.minus_box),
+                                  ),
+                                  validators: [],
+                                ),
+                                FormBuilderTextField(
+                                  attribute: "loanPartPayment",
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: InputDecoration(
+                                    labelText: "Loan Part Payment",
+                                    prefixIcon:
+                                        Icon(MaterialCommunityIcons.plus_box),
+                                  ),
+                                  validators: [],
+                                ),
+                                FormBuilderTextField(
+                                  attribute: "loanAdvancePayment",
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: InputDecoration(
+                                    labelText: "Advance Payment",
+                                    prefixIcon:
+                                        Icon(MaterialCommunityIcons.plus_box),
+                                  ),
                                   validators: [],
                                 ),
                               ],

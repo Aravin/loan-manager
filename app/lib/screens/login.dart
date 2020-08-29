@@ -26,14 +26,14 @@ class _LoginState extends State<Login> {
   String bottomSheetButtonText = 'Existing User? Login';
   IconData bottomSheetButtonIcon = Icons.verified_user;
   String toggleLogin = 'Login';
-  User loggedUser;
+  AppUser loggedUser;
 
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
     print(user);
     if (user != null) {
-      this.loggedUser = User.fromJson(jsonDecode(user));
+      this.loggedUser = AppUser.fromJson(jsonDecode(user));
       if (this.loggedUser.uid != null) {
         Navigator.pushReplacement(
           context,
@@ -348,13 +348,13 @@ class _GoogleSignInState extends State<_GoogleSignIn> {
   //Example code of how to sign in with Google.
   void _signInWithGoogle() async {
     try {
-      AuthResult userCredential;
+      UserCredential userCredential;
 
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      final AuthCredential googleAuthCredential =
-          GoogleAuthProvider.getCredential(
+      final GoogleAuthCredential googleAuthCredential =
+          GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );

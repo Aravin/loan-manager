@@ -24,16 +24,17 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons:
-  firebase_core:
+  firebase_core: "0.5.0"
   cloud_firestore:
-  firebase_auth:
+  firebase_auth: "^0.18.0+1"
   google_sign_in:
   flutter_signin_button:
-  firebase_analytics:
+  firebase_analytics: "^6.0.0"
   firebase_crashlytics:
   rxdart:
   flutter_form_builder:
   shared_preferences:
+  flutter_icons: ^1.1.0
 
 dev_dependencies:
   flutter_test:

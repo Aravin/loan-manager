@@ -7,7 +7,7 @@ import 'package:loan_manager/widgets/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatelessWidget {
-  User loggedUser;
+  AppUser loggedUser;
 
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
