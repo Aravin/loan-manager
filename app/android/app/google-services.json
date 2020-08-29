@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "227084824798",
+    "firebase_url": "https://loan-manager-epix.firebaseio.com",
+    "project_id": "loan-manager-epix",
+    "storage_bucket": "loan-manager-epix.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227084824798:android:c25dac67544e93e66d124f",
+        "android_client_info": {
+          "package_name": "io.epix.loan_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227084824798-ah7reh48dgg7qle27gcnui7t4bdunocm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD7F8XiJ57uCSoIfFOv2K4aPugGQI1TQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227084824798-ah7reh48dgg7qle27gcnui7t4bdunocm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
