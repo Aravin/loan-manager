@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:loan_manager/methods/sharedPreference.dart';
 import 'package:loan_manager/models/user.dart';
+import 'package:loan_manager/screens/loan/add.dart';
 import 'package:loan_manager/widgets/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +25,16 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddLoan()),
+          );
+        },
+        label: Text('Add new Loan'),
+        icon: Icon(Icons.monetization_on),
+      ),
       drawer: AppDrawer(loggedUser: loggedUser),
       appBar: AppBar(
         title: Text('Home'),
