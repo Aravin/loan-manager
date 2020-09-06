@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loan_manager/constants.dart';
+import 'package:loan_manager/methods/calculate_loan.dart';
 import 'package:loan_manager/models/loan.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
@@ -38,6 +40,7 @@ class _AddLoanState extends State<AddLoan> {
   final FocusNode loanOtherChargesFocus = FocusNode();
 
   String loanTenureLabel = 'Year';
+  int tenureMultiple = 12; // year (1) or month (12)
 
   final FocusNode moratoriumFocus = FocusNode();
 
@@ -70,6 +73,12 @@ class _AddLoanState extends State<AddLoan> {
       appBar: AppBar(
         leading: BackButton(),
         title: Text('Add new Loan'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+          ),
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -96,7 +105,7 @@ class _AddLoanState extends State<AddLoan> {
                 'otherCharges': null,
                 'moratorium': false,
                 'moratoriumMonth': '0',
-                'moratoriumType': null
+                'moratoriumType': null,
               },
               autovalidate: false,
               child: Column(
@@ -196,8 +205,10 @@ class _AddLoanState extends State<AddLoan> {
                                         setState(() {
                                           if (this.loanTenureLabel == 'Month') {
                                             this.loanTenureLabel = 'Year';
+                                            this.tenureMultiple = 12;
                                           } else {
                                             this.loanTenureLabel = 'Month';
+                                            this.tenureMultiple = 1;
                                           }
                                         })
                                       },
@@ -501,13 +512,22 @@ class _AddLoanState extends State<AddLoan> {
                 child: Text("Save"),
                 onPressed: () {
                   if (_fbKey.currentState.saveAndValidate()) {
+                    print(tenureMultiple);
+                    double amount =
+                        double.parse(_fbKey.currentState.value['amount']);
+                    int tenure =
+                        int.parse(_fbKey.currentState.value['tenure']) *
+                            tenureMultiple;
+                    double interest =
+                        double.parse(_fbKey.currentState.value['interest']);
+                    double monthlyEmi = calculateEmi(amount, tenure, interest);
+
                     Loan loan = Loan(
                       loanType: _fbKey.currentState.value['loanType'],
                       accountName: _fbKey.currentState.value['accountName'],
-                      amount: double.parse(_fbKey.currentState.value['amount']),
-                      tenure: int.parse(_fbKey.currentState.value['tenure']),
-                      interest:
-                          double.parse(_fbKey.currentState.value['interest']),
+                      amount: amount,
+                      tenure: tenure,
+                      interest: interest,
                       startDate: _fbKey.currentState.value['startDate'],
                       accountNumber: _fbKey.currentState.value['accountNumber'],
                       bankName: _fbKey.currentState.value['bankName'],
@@ -527,9 +547,21 @@ class _AddLoanState extends State<AddLoan> {
                           _fbKey.currentState.value['moratoriumMonth']),
                       moratoriumType:
                           _fbKey.currentState.value['moratoriumType'],
+                      monthlyEmi: monthlyEmi,
+                      totalEmi: double.parse(
+                          (monthlyEmi * tenure).toStringAsFixed(2)),
                     );
 
                     loan.saveLoan();
+                    Fluttertoast.showToast(
+                        msg: "Loan Saved Successfully ✔",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    Navigator.pop(context);
                   }
                 },
               ),

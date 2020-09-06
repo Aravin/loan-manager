@@ -1,3 +1,5 @@
+import 'package:loan_manager/methods/calculate_loan.dart';
+
 import 'firestore.dart';
 
 class Loan {
@@ -25,6 +27,10 @@ class Loan {
   final int moratoriumMonth;
   final String moratoriumType;
 
+  // calculate field
+  final double monthlyEmi;
+  final double totalEmi;
+
   Loan({
     this.loanType,
     this.accountName,
@@ -46,6 +52,8 @@ class Loan {
     this.moratorium,
     this.moratoriumMonth,
     this.moratoriumType,
+    this.monthlyEmi,
+    this.totalEmi,
   });
 
   Loan.fromJson(Map<String, dynamic> json)
@@ -68,7 +76,9 @@ class Loan {
         insuranceCharges = json['insuranceCharges'],
         moratorium = json['moratorium'],
         moratoriumMonth = json['moratoriumMonth'],
-        moratoriumType = json['moratoriumType'];
+        moratoriumType = json['moratoriumType'],
+        monthlyEmi = json['monthlyEmi'],
+        totalEmi = json['totalEmi'];
 
   Map<String, dynamic> toJson() => {
         'loanType': loanType,
@@ -91,6 +101,8 @@ class Loan {
         'moratorium': moratorium,
         'moratoriumMonth': moratoriumMonth,
         'moratoriumType': moratoriumType,
+        'monthlyEmi': monthlyEmi,
+        'totalEmi': totalEmi,
       };
 
   // Create a CollectionReference called users that references the firestore collection

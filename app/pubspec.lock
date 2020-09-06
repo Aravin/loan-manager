@@ -303,6 +303,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.4"
   font_awesome_flutter:
     dependency: transitive
     description:
@@ -374,7 +381,7 @@ packages:
     source: hosted
     version: "1.1.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"

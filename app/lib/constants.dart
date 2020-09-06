@@ -15,3 +15,5 @@ EdgeInsets appPaddingS = EdgeInsets.all(7.5);
 EdgeInsets appPaddingM = EdgeInsets.all(12.5);
 EdgeInsets appPaddingL = EdgeInsets.all(15.0);
 EdgeInsets appPaddingXL = EdgeInsets.all(25 / 0);
+
+EdgeInsets appPaddingTopXS = EdgeInsets.only(top: 5);

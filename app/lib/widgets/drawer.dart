@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,8 +64,16 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.attach_money),
-            title: Text('Saved Loan'),
+            leading: Icon(MaterialCommunityIcons.account_minus),
+            title: Text('Borrow'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            leading: Icon(MaterialCommunityIcons.account_plus),
+            title: Text('Lend'),
             onTap: () {
               // Update the state of the app.
               // ...

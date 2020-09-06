@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/user.dart';
+import 'package:loan_manager/screens/lend/add.dart';
+import 'package:loan_manager/screens/lend/list.dart';
 import 'package:loan_manager/screens/loan/add.dart';
 import 'package:loan_manager/screens/loan/list.dart';
 import 'package:loan_manager/widgets/drawer.dart';
@@ -191,13 +193,25 @@ class _HomeState extends State<Home> {
                       children: [
                         RaisedButton.icon(
                           color: primaryColor,
-                          onPressed: () => {},
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LendListScreen()),
+                            )
+                          },
                           icon: Icon(Icons.list),
                           label: Text('Go to Loan List'),
                         ),
                         RaisedButton.icon(
                           color: primaryColor,
-                          onPressed: () => {},
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddLend()),
+                            )
+                          },
                           icon: Icon(Icons.add),
                           label: Text('Add new Loan'),
                         )

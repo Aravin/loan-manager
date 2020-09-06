@@ -17,7 +17,7 @@ class LoanList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return Center(child: CircularProgressIndicator());
         }
 
         return new ListView(
@@ -39,15 +39,18 @@ class LoanList extends StatelessWidget {
                       ),
                       subtitle: Text(
                           'Loan Amount ${document.data()['data']['amount']}'),
-                      trailing: Text('Montly EMI ₹50,000.00'),
+                      trailing: Text(
+                          'Montly EMI ₹${document.data()['data']['monthlyEmi']}'),
                     ),
                     Container(
                       padding: appPaddingM,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('₹50,000.00'),
-                          Text('₹50,000.00'),
+                          Text(
+                              'Payable ₹${document.data()['data']['totalEmi']}'),
+                          Text(
+                              'Paid ₹${document.data()['data']['accountName']}'),
                         ],
                       ),
                     ),
