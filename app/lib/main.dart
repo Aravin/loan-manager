@@ -3,6 +3,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_manager/constants.dart';
+import 'package:loan_manager/screens/loan/list.dart';
+import 'package:loan_manager/widgets/loan_list.dart';
 import 'package:loan_manager/screens/login.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -38,6 +40,7 @@ class App extends StatelessWidget {
           return MaterialApp(
             title: 'Flutter Demo',
             theme: ThemeData(
+              fontFamily: 'Rubik',
               // This is the theme of your application.
               primarySwatch: Colors.blue,
               // This makes the visual density adapt to the platform that you run

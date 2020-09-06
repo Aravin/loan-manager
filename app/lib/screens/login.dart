@@ -12,6 +12,7 @@ import 'package:loan_manager/methods/sharedPreference.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -27,11 +28,11 @@ class _LoginState extends State<Login> {
   IconData bottomSheetButtonIcon = Icons.verified_user;
   String toggleLogin = 'Login';
   AppUser loggedUser;
+  bool showSpinner = false;
 
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
-    print(user);
     if (user != null) {
       this.loggedUser = AppUser.fromJson(jsonDecode(user));
       if (this.loggedUser.uid != null) {
@@ -45,7 +46,6 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getLoginInformation();
   }
@@ -58,96 +58,108 @@ class _LoginState extends State<Login> {
         title: Text('Welcome to Loan Manager'),
         centerTitle: true,
       ),
-      body: Center(
-        child: ListView(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  child: Image.asset('assets/logo.png'),
-                  padding: const EdgeInsets.all(16),
-                ),
-                Container(
-                  child: Text('Login / Sign-up'),
-                  padding: const EdgeInsets.all(16),
-                ),
-                _GoogleSignIn(),
-                Container(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: SignInButtonBuilder(
-                    text: "Continue with Email",
-                    icon: Icons.email,
-                    backgroundColor: Colors.blue,
-                    onPressed: () => {
-                      showModalBottomSheet<void>(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return StatefulBuilder(
-                            builder: (BuildContext context, setState) {
-                              //  padding: EdgeInsets.only(
-                              //         bottom:
-                              //             MediaQuery.of(context).viewInsets.bottom),
-                              return Scaffold(
-                                body: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    toggleLogin == 'Login'
-                                        ? RegisterPage()
-                                        : _EmailPasswordForm(),
-                                    RaisedButton.icon(
-                                      icon: Icon(bottomSheetButtonIcon),
-                                      label: Text(bottomSheetButtonText),
-                                      color: Colors.green,
-                                      textColor: Colors.white,
-                                      onPressed: () => {
-                                        setState(() {
-                                          if (toggleLogin == 'Login') {
-                                            bottomSheetButtonIcon =
-                                                Icons.create;
-                                            bottomSheetButtonText = 'Register';
-                                            toggleLogin = 'Register';
-                                          } else {
-                                            bottomSheetButtonIcon =
-                                                Icons.verified_user;
-                                            bottomSheetButtonText =
-                                                'Existing User? Login';
-                                            toggleLogin = 'Login';
-                                          }
-                                        })
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.close),
-                                      color: primaryColor,
-                                      tooltip: MaterialLocalizations.of(context)
-                                          .closeButtonTooltip,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    },
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Center(
+          child: ListView(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.asset('assets/logo.png'),
+                    padding: const EdgeInsets.all(16),
                   ),
-                ),
-                _AnonymouslySignInSection(),
-                Container(
-                  child: Text(
-                      'By using this application you accept our Terms of Use and Privacy Policy.'),
-                  padding: const EdgeInsets.all(16),
-                ),
-              ],
-            ),
-          ],
+                  Container(
+                    child: Text('Login / Sign-up'),
+                    padding: const EdgeInsets.all(16),
+                  ),
+                  _GoogleSignIn(),
+                  Container(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: SignInButtonBuilder(
+                      text: "Continue with Email",
+                      icon: Icons.email,
+                      backgroundColor: Colors.blue,
+                      onPressed: () => {
+                        showModalBottomSheet<void>(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context, setState) {
+                                //  padding: EdgeInsets.only(
+                                //         bottom:
+                                //             MediaQuery.of(context).viewInsets.bottom),
+                                return Scaffold(
+                                  body: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      toggleLogin == 'Login'
+                                          ? RegisterPage()
+                                          : _EmailPasswordForm(),
+                                      RaisedButton.icon(
+                                        icon: Icon(bottomSheetButtonIcon),
+                                        label: Text(bottomSheetButtonText),
+                                        color: Colors.green,
+                                        textColor: Colors.white,
+                                        onPressed: () => {
+                                          setState(
+                                            () {
+                                              showSpinner = true;
+                                              if (toggleLogin == 'Login') {
+                                                bottomSheetButtonIcon =
+                                                    Icons.create;
+                                                bottomSheetButtonText =
+                                                    'Register';
+                                                toggleLogin = 'Register';
+                                              } else {
+                                                bottomSheetButtonIcon =
+                                                    Icons.verified_user;
+                                                bottomSheetButtonText =
+                                                    'Existing User? Login';
+                                                toggleLogin = 'Login';
+                                              }
+
+                                              setState(
+                                                  () => {showSpinner = false});
+                                            },
+                                          )
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.close),
+                                        color: primaryColor,
+                                        tooltip:
+                                            MaterialLocalizations.of(context)
+                                                .closeButtonTooltip,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      },
+                    ),
+                  ),
+                  _AnonymouslySignInSection(),
+                  Container(
+                    child: Text(
+                        'By using this application you accept our Terms of Use and Privacy Policy.'),
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
