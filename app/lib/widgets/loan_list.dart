@@ -25,6 +25,10 @@ class LoanList extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
 
+        if (snapshot.data.docs.length == 0) {
+          return Center(child: Text('You don\'t have any saved loans!'));
+        }
+
         return new ListView(
           children: snapshot.data.docs.map((DocumentSnapshot document) {
             return ClipRRect(
