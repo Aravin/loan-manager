@@ -45,10 +45,13 @@ class Lend {
         'otherLoanInfo': otherLoanInfo,
       };
 
-  // Create a CollectionReference called users that references the firestore collection
-
   Future<void> saveLend() {
     // Call the user's CollectionReference to add a new user
     return create('lend', this.toJson());
+  }
+
+  Future<void> updateLend(docId) {
+    // Call the user's CollectionReference to add a new user
+    return update('lend', docId, this.toJson());
   }
 }

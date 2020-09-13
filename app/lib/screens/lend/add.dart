@@ -242,8 +242,13 @@ class _AddLendState extends State<AddLend> {
                                     _fbKey.currentState.value['otherLoanInfo'],
                               );
 
-                              lend.saveLend();
-                              showToast("Loan Saved Successfully ✔");
+                              if (widget.lendId != null) {
+                                lend.updateLend(widget.lendId);
+                                showToast("Loan Updated Successfully ✔");
+                              } else {
+                                lend.saveLend();
+                                showToast("Loan Saved Successfully ✔");
+                              }
                               Navigator.pop(context);
                             }
                           },

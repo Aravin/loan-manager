@@ -1,5 +1,3 @@
-import 'package:loan_manager/methods/calculate_loan.dart';
-
 import 'firestore.dart';
 
 class Loan {
@@ -62,7 +60,8 @@ class Loan {
         amount = json['amount'],
         tenure = json['tenure'],
         interest = json['interest'],
-        startDate = json['startDate'],
+        startDate =
+            json['startDate'] != null ? json['startDate'].toDate() : null,
         accountNumber = json['accountNumber'],
         bankName = json['bankName'],
         phone = json['phone'],
@@ -105,10 +104,11 @@ class Loan {
         'totalEmi': totalEmi,
       };
 
-  // Create a CollectionReference called users that references the firestore collection
-
   Future<void> saveLoan() {
-    // Call the user's CollectionReference to add a new user
     return create('loan', this.toJson());
+  }
+
+  Future<void> updateLoan(docId) {
+    return update('loan', docId, this.toJson());
   }
 }

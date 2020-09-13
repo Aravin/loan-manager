@@ -9,10 +9,16 @@ import 'package:loan_manager/methods/calculate_loan.dart';
 import 'package:loan_manager/models/loan.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
+import 'package:loan_manager/widgets/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class AddLoan extends StatefulWidget {
+  final Loan loan;
+  final String loanId;
+
+  const AddLoan({this.loan, this.loanId});
+
   @override
   _AddLoanState createState() => _AddLoanState();
 }
@@ -85,26 +91,59 @@ class _AddLoanState extends State<AddLoan> {
             child: FormBuilder(
               key: _fbKey,
               initialValue: {
-                'loanType': 'Other Loan',
-                'accountName': '',
-                'amount': '',
-                'tenure': '',
-                'interest': '',
-                // 'startDate': new DateTime.now(),
-                'accountNumber': null,
-                'bankName': null,
-                'phone': null,
-                'email': null,
-                'contactPerson': null,
-                'otherLoanInfo': null,
-                'partPayment': null,
-                'advancePayment': null,
-                'processingFee': null,
-                'insuranceCharges': null,
-                'otherCharges': null,
-                'moratorium': false,
-                'moratoriumMonth': '0',
-                'moratoriumType': null,
+                'loanType': widget.loan.loanType != null
+                    ? widget.loan.loanType
+                    : 'Other Loan',
+                'accountName': widget.loan.accountName != null
+                    ? widget.loan.accountName
+                    : '',
+                'amount': widget.loan.amount != null
+                    ? widget.loan.amount.toString()
+                    : '',
+                'tenure': widget.loan.tenure != null
+                    ? widget.loan.tenure.toString()
+                    : '',
+                'interest': widget.loan.interest != null
+                    ? widget.loan.interest.toString()
+                    : '',
+                'startDate': widget.loan.startDate ?? widget.loan.startDate,
+                'accountNumber': widget.loan.accountNumber != null
+                    ? widget.loan.accountNumber
+                    : null,
+                'bankName':
+                    widget.loan.bankName != null ? widget.loan.bankName : null,
+                'phone': widget.loan.phone != null ? widget.loan.phone : null,
+                'email': widget.loan.email != null ? widget.loan.email : null,
+                'contactPerson': widget.loan.contactPerson != null
+                    ? widget.loan.contactPerson
+                    : null,
+                'otherLoanInfo': widget.loan.otherLoanInfo != null
+                    ? widget.loan.otherLoanInfo
+                    : null,
+                'partPayment': widget.loan.partPayment != null
+                    ? widget.loan.partPayment.toString()
+                    : null,
+                'advancePayment': widget.loan.advancePayment != null
+                    ? widget.loan.advancePayment.toString()
+                    : null,
+                'processingFee': widget.loan.processingFee != null
+                    ? widget.loan.processingFee.toString()
+                    : null,
+                'insuranceCharges': widget.loan.insuranceCharges != null
+                    ? widget.loan.insuranceCharges.toString()
+                    : null,
+                'otherCharges': widget.loan.otherCharges != null
+                    ? widget.loan.otherCharges.toString()
+                    : null,
+                'moratorium': widget.loan.moratorium != null
+                    ? widget.loan.moratorium
+                    : false,
+                'moratoriumMonth': widget.loan.moratoriumMonth != null
+                    ? widget.loan.moratoriumMonth.toString()
+                    : '0',
+                'moratoriumType': widget.loan.moratoriumType != null
+                    ? widget.loan.moratoriumType
+                    : null,
               },
               autovalidate: false,
               child: Column(
@@ -550,15 +589,14 @@ class _AddLoanState extends State<AddLoan> {
                           (monthlyEmi * tenure).toStringAsFixed(2)),
                     );
 
-                    loan.saveLoan();
-                    Fluttertoast.showToast(
-                        msg: "Loan Saved Successfully ✔",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                    if (widget.loanId != null) {
+                      loan.updateLoan(widget.loanId);
+                      showToast("Loan Updated Successfully ✔");
+                    } else {
+                      loan.saveLoan();
+                      showToast("Loan Saved Successfully ✔");
+                    }
+
                     Navigator.pop(context);
                   }
                 },
