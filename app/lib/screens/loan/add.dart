@@ -91,58 +91,59 @@ class _AddLoanState extends State<AddLoan> {
             child: FormBuilder(
               key: _fbKey,
               initialValue: {
-                'loanType': widget.loan.loanType != null
-                    ? widget.loan.loanType
+                'loanType': widget.loan?.loanType != null
+                    ? widget.loan?.loanType
                     : 'Other Loan',
-                'accountName': widget.loan.accountName != null
-                    ? widget.loan.accountName
+                'accountName': widget.loan?.accountName != null
+                    ? widget.loan?.accountName
                     : '',
-                'amount': widget.loan.amount != null
-                    ? widget.loan.amount.toString()
+                'amount': widget.loan?.amount != null
+                    ? widget.loan?.amount.toString()
                     : '',
-                'tenure': widget.loan.tenure != null
-                    ? widget.loan.tenure.toString()
+                'tenure': widget.loan?.tenure != null
+                    ? widget.loan?.tenure.toString()
                     : '',
-                'interest': widget.loan.interest != null
-                    ? widget.loan.interest.toString()
+                'interest': widget.loan?.interest != null
+                    ? widget.loan?.interest.toString()
                     : '',
-                'startDate': widget.loan.startDate ?? widget.loan.startDate,
-                'accountNumber': widget.loan.accountNumber != null
-                    ? widget.loan.accountNumber
+                'startDate': widget.loan?.startDate ?? widget.loan?.startDate,
+                'accountNumber': widget.loan?.accountNumber != null
+                    ? widget.loan?.accountNumber
                     : null,
-                'bankName':
-                    widget.loan.bankName != null ? widget.loan.bankName : null,
-                'phone': widget.loan.phone != null ? widget.loan.phone : null,
-                'email': widget.loan.email != null ? widget.loan.email : null,
-                'contactPerson': widget.loan.contactPerson != null
-                    ? widget.loan.contactPerson
+                'bankName': widget.loan?.bankName != null
+                    ? widget.loan?.bankName
                     : null,
-                'otherLoanInfo': widget.loan.otherLoanInfo != null
-                    ? widget.loan.otherLoanInfo
+                'phone': widget.loan?.phone != null ? widget.loan?.phone : null,
+                'email': widget.loan?.email != null ? widget.loan?.email : null,
+                'contactPerson': widget.loan?.contactPerson != null
+                    ? widget.loan?.contactPerson
                     : null,
-                'partPayment': widget.loan.partPayment != null
-                    ? widget.loan.partPayment.toString()
+                'otherLoanInfo': widget.loan?.otherLoanInfo != null
+                    ? widget.loan?.otherLoanInfo
                     : null,
-                'advancePayment': widget.loan.advancePayment != null
-                    ? widget.loan.advancePayment.toString()
+                'partPayment': widget.loan?.partPayment != null
+                    ? widget.loan?.partPayment.toString()
                     : null,
-                'processingFee': widget.loan.processingFee != null
-                    ? widget.loan.processingFee.toString()
+                'advancePayment': widget.loan?.advancePayment != null
+                    ? widget.loan?.advancePayment.toString()
                     : null,
-                'insuranceCharges': widget.loan.insuranceCharges != null
-                    ? widget.loan.insuranceCharges.toString()
+                'processingFee': widget.loan?.processingFee != null
+                    ? widget.loan?.processingFee.toString()
                     : null,
-                'otherCharges': widget.loan.otherCharges != null
-                    ? widget.loan.otherCharges.toString()
+                'insuranceCharges': widget.loan?.insuranceCharges != null
+                    ? widget.loan?.insuranceCharges.toString()
                     : null,
-                'moratorium': widget.loan.moratorium != null
-                    ? widget.loan.moratorium
+                'otherCharges': widget.loan?.otherCharges != null
+                    ? widget.loan?.otherCharges.toString()
+                    : null,
+                'moratorium': widget.loan?.moratorium != null
+                    ? widget.loan?.moratorium
                     : false,
-                'moratoriumMonth': widget.loan.moratoriumMonth != null
-                    ? widget.loan.moratoriumMonth.toString()
+                'moratoriumMonth': widget.loan?.moratoriumMonth != null
+                    ? widget.loan?.moratoriumMonth.toString()
                     : '0',
-                'moratoriumType': widget.loan.moratoriumType != null
-                    ? widget.loan.moratoriumType
+                'moratoriumType': widget.loan?.moratoriumType != null
+                    ? widget.loan?.moratoriumType
                     : null,
               },
               autovalidate: false,

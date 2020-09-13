@@ -8,6 +8,10 @@ import 'package:loan_manager/screens/lend/add.dart';
 import 'package:loan_manager/widgets/toast.dart';
 
 class LendList extends StatelessWidget {
+  final Function actionCallback;
+
+  const LendList({this.actionCallback});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
@@ -107,6 +111,8 @@ class LendList extends StatelessWidget {
                                         showToast("Failed to Delete ❌"),
                                       }
                                     });
+
+                            actionCallback(true);
                           }
                         },
                         itemBuilder: (BuildContext context) =>

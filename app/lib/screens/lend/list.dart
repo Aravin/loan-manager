@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/screens/lend/add.dart';
-import 'package:loan_manager/screens/loan/add.dart';
 import 'package:loan_manager/widgets/drawer.dart';
 import 'package:loan_manager/widgets/lend_list.dart';
-import 'package:loan_manager/widgets/loan_list.dart';
 
-class LendListScreen extends StatelessWidget {
+class LendListScreen extends StatefulWidget {
+  @override
+  _LendListScreenState createState() => _LendListScreenState();
+}
+
+class _LendListScreenState extends State<LendListScreen> {
+  actionCallback(bool rebuild) {
+    if (rebuild) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +43,7 @@ class LendListScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: LendList(),
+      body: LendList(actionCallback: actionCallback),
       backgroundColor: themeWhite,
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(

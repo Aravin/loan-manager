@@ -2,14 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/firestore.dart';
-import 'package:loan_manager/models/lend.dart';
 import 'package:loan_manager/models/loan.dart';
-import 'package:loan_manager/screens/lend/add.dart';
 import 'package:loan_manager/screens/loan/add.dart';
 import 'package:loan_manager/widgets/toast.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class LoanList extends StatelessWidget {
+  final Function actionCallback;
+
+  const LoanList({this.actionCallback});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
@@ -106,6 +108,8 @@ class LoanList extends StatelessWidget {
                                           showToast("Failed to Delete ❌"),
                                         }
                                       });
+
+                              actionCallback(true);
                             }
                           },
                           itemBuilder: (BuildContext context) =>
