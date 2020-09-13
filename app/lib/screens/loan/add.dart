@@ -49,7 +49,6 @@ class _AddLoanState extends State<AddLoan> {
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
-    print(user);
     if (user != null) {
       this.loggedUser = AppUser.fromJson(jsonDecode(user));
     }
@@ -512,7 +511,6 @@ class _AddLoanState extends State<AddLoan> {
                 child: Text("Save"),
                 onPressed: () {
                   if (_fbKey.currentState.saveAndValidate()) {
-                    print(tenureMultiple);
                     double amount =
                         double.parse(_fbKey.currentState.value['amount']);
                     int tenure =

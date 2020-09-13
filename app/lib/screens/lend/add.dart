@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -8,10 +7,16 @@ import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/models/lend.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
+import 'package:loan_manager/widgets/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class AddLend extends StatefulWidget {
+  final Lend lend;
+  final String lendId;
+
+  const AddLend({this.lend, this.lendId});
+
   @override
   _AddLendState createState() => _AddLendState();
 }
@@ -38,9 +43,8 @@ class _AddLendState extends State<AddLend> {
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
-    print(user);
     if (user != null) {
-      this.loggedUser = AppUser.fromJson(jsonDecode(user));
+      loggedUser = AppUser.fromJson(jsonDecode(user));
     }
   }
 
@@ -74,12 +78,20 @@ class _AddLendState extends State<AddLend> {
             child: FormBuilder(
               key: _fbKey,
               initialValue: {
-                'amount': '',
-                'interest': '0.0',
-                'phone': null,
-                'email': null,
-                'contactPerson': null,
-                'otherLoanInfo': null,
+                'amount': widget.lend?.amount != null
+                    ? widget.lend?.amount.toString()
+                    : null,
+                'interest': widget.lend?.interest != null
+                    ? widget.lend?.interest.toString()
+                    : '0.0',
+                'phone': widget.lend?.phone != null ? widget.lend?.phone : '',
+                'email': widget.lend?.email != null ? widget.lend?.email : '',
+                'contactPerson': widget.lend?.contactPerson != null
+                    ? widget.lend?.contactPerson
+                    : '',
+                'otherLoanInfo': widget.lend?.otherLoanInfo != null
+                    ? widget.lend?.otherLoanInfo
+                    : '',
               },
               autovalidate: false,
               child: ListView(
@@ -125,9 +137,9 @@ class _AddLendState extends State<AddLend> {
                       prefixIcon: Icon(MaterialCommunityIcons.percent),
                     ),
                     validators: [
-                      FormBuilderValidators.numeric(),
-                      FormBuilderValidators.min(0.0),
-                      FormBuilderValidators.max(40),
+                      // FormBuilderValidators.numeric(),
+                      // FormBuilderValidators.min(0.0),
+                      // FormBuilderValidators.max(40),
                     ],
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(startDateFocus),
@@ -210,12 +222,15 @@ class _AddLendState extends State<AddLend> {
                           child: Text("Save"),
                           onPressed: () {
                             if (_fbKey.currentState.saveAndValidate()) {
-                              print(_fbKey.currentState.value);
                               Lend lend = Lend(
                                 amount: double.parse(
                                     _fbKey.currentState.value['amount']),
-                                interest: double.parse(
-                                    _fbKey.currentState.value['interest']),
+                                interest: _fbKey
+                                            .currentState.value['interest'] !=
+                                        null
+                                    ? double.parse(
+                                        _fbKey.currentState.value['interest'])
+                                    : null,
                                 lendDate: _fbKey.currentState.value['lendDate'],
                                 expectedReturnDate: _fbKey
                                     .currentState.value['expectedReturnDate'],
@@ -228,14 +243,7 @@ class _AddLendState extends State<AddLend> {
                               );
 
                               lend.saveLend();
-                              Fluttertoast.showToast(
-                                  msg: "Loan Saved Successfully ✔",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
+                              showToast("Loan Saved Successfully ✔");
                               Navigator.pop(context);
                             }
                           },

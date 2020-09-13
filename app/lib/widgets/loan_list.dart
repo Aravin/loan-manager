@@ -10,8 +10,6 @@ class LoanList extends StatelessWidget {
     return FutureBuilder<QuerySnapshot>(
       future: read('loan'),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        print(snapshot);
-
         if (snapshot.hasError) {
           return Text("Something went wrong");
         }
@@ -22,8 +20,6 @@ class LoanList extends StatelessWidget {
 
         return new ListView(
           children: snapshot.data.docs.map((DocumentSnapshot document) {
-            print(document.data().length);
-
             return ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               child: Card(

@@ -60,8 +60,8 @@ class _AppDrawerState extends State<AppDrawer> {
               ],
             ),
             decoration: BoxDecoration(
-              color: primaryColor,
-            ),
+                color: primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(15))),
           ),
           ListTile(
             leading: Icon(MaterialCommunityIcons.account_minus),

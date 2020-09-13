@@ -23,7 +23,6 @@ class _HomeState extends State<Home> {
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = prefs.getString('user');
-    print(user);
     if (user != null) {
       this.loggedUser = AppUser.fromJson(jsonDecode(user));
     }

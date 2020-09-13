@@ -20,14 +20,22 @@ Future<String> create(String doc, data) async {
       .catchError((error) => error);
 }
 
+Future<DocumentSnapshot> readSingle(String doc, String docId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final user = prefs.getString('user');
+
+  DocumentReference docRef =
+      FirebaseFirestore.instance.collection(doc).doc(docId);
+
+  return docRef.get();
+}
+
 Future<QuerySnapshot> read(String doc) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final user = prefs.getString('user');
 
   CollectionReference docCollection =
       FirebaseFirestore.instance.collection(doc);
-
-  print(jsonDecode(user)['uid']);
 
   return docCollection.where('uid', isEqualTo: jsonDecode(user)['uid']).get();
 }
@@ -45,7 +53,7 @@ Future<String> update(String doc, String docId, data) async {
       .catchError((error) => error);
 }
 
-Future<String> delete(String doc, String docId, data) async {
+Future<String> delete(String doc, String docId) async {
   CollectionReference docCollection =
       FirebaseFirestore.instance.collection(doc);
 

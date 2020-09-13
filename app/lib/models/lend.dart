@@ -25,8 +25,10 @@ class Lend {
   Lend.fromJson(Map<String, dynamic> json)
       : amount = json['amount'],
         interest = json['interest'],
-        lendDate = json['lendDate'],
-        expectedReturnDate = json['expectedReturnDate'],
+        lendDate = json['lendDate'] != null ? json['lendDate'].toDate() : null,
+        expectedReturnDate = json['expectedReturnDate'] != null
+            ? json['expectedReturnDate'].toDate()
+            : null,
         phone = json['phone'],
         email = json['email'],
         contactPerson = json['contactPerson'],
