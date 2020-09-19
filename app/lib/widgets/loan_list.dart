@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_manager/constants.dart';
+import 'package:loan_manager/methods/calculate_paid.dart';
+import 'package:loan_manager/methods/calculate_paid_percent.dart';
 import 'package:loan_manager/models/firestore.dart';
 import 'package:loan_manager/models/loan.dart';
 import 'package:loan_manager/screens/loan/add.dart';
@@ -60,19 +62,26 @@ class LoanList extends StatelessWidget {
                                 Text(
                                     'Payable ₹${document.data()['data']['totalEmi']}'),
                                 Text(
-                                    'Paid ₹${document.data()['data']['accountName']}'),
+                                    'Paid ₹${calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi'])}'),
                               ],
                             ),
                           ),
                           LinearPercentIndicator(
                             lineHeight: 15.0,
-                            percent: 0.3,
+                            percent: calculatePaidPercent(
+                                    calculatePaid(
+                                        document
+                                            .data()['data']['startDate']
+                                            .toDate(),
+                                        document.data()['data']['monthlyEmi']),
+                                    document.data()['data']['totalEmi']) /
+                                100,
                             backgroundColor: liteSecondaryColor,
                             progressColor: secondaryColor,
                             animation: true,
                             animationDuration: 1000,
-                            center: new Text(
-                              "10% paid",
+                            center: Text(
+                              '${calculatePaidPercent(calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi']), document.data()['data']['totalEmi'])}% paid',
                               style: TextStyle(
                                 color: primaryColor,
                                 fontWeight: FontWeight.bold,
@@ -85,48 +94,53 @@ class LoanList extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        height: 142,
-                        color: liteAccentColor,
-                        child: PopupMenuButton<String>(
-                          color: liteSecondaryColor,
-                          onSelected: (String result) {
-                            if (result == 'edit') {
-                              var loan = Loan.fromJson(document.data()['data']);
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => AddLoan(
-                                          loan: loan,
-                                          loanId: document.id,
-                                        )),
-                              );
-                            }
-                            if (result == 'delete') {
-                              delete('loan', document.id)
-                                  .then((value) => {
-                                        showToast(
-                                            "Loan Deleted Successfully ✔"),
-                                      })
-                                  .catchError((onError) => {
-                                        {
-                                          showToast("Failed to Delete ❌"),
-                                        }
-                                      });
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          height: 50,
+                          color: liteAccentColor,
+                          child: PopupMenuButton<String>(
+                            padding: EdgeInsets.symmetric(vertical: 0),
+                            color: liteSecondaryColor,
+                            onSelected: (String result) {
+                              if (result == 'edit') {
+                                var loan =
+                                    Loan.fromJson(document.data()['data']);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => AddLoan(
+                                            loan: loan,
+                                            loanId: document.id,
+                                          )),
+                                );
+                              }
+                              if (result == 'delete') {
+                                delete('loan', document.id)
+                                    .then((value) => {
+                                          showToast(
+                                              "Loan Deleted Successfully ✔"),
+                                        })
+                                    .catchError((onError) => {
+                                          {
+                                            showToast("Failed to Delete ❌"),
+                                          }
+                                        });
 
-                              actionCallback(true);
-                            }
-                          },
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            PopupMenuItem<String>(
-                              value: 'edit',
-                              child: Text('Edit'),
-                            ),
-                            PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Text('Delete'),
-                            ),
-                          ],
+                                actionCallback(true);
+                              }
+                            },
+                            itemBuilder: (BuildContext context) =>
+                                <PopupMenuEntry<String>>[
+                              PopupMenuItem<String>(
+                                value: 'edit',
+                                child: Text('Edit'),
+                              ),
+                              PopupMenuItem<String>(
+                                value: 'delete',
+                                child: Text('Delete'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

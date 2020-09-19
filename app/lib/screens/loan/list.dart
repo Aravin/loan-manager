@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/screens/loan/add.dart';
+import 'package:loan_manager/widgets/bottom_navigation_bar.dart';
 import 'package:loan_manager/widgets/drawer.dart';
 import 'package:loan_manager/widgets/loan_list.dart';
 
-class LoanListScreen extends StatelessWidget {
+class LoanListScreen extends StatefulWidget {
+  @override
+  _LoanListScreenState createState() => _LoanListScreenState();
+}
+
+class _LoanListScreenState extends State<LoanListScreen> {
+  actionCallback(bool rebuild) {
+    if (rebuild) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +25,8 @@ class LoanListScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddLoan()),
+            MaterialPageRoute(
+                builder: (context) => AddLoan(actionCallback: actionCallback)),
           );
         },
         label: Text('Add new Loan'),
@@ -24,7 +36,7 @@ class LoanListScreen extends StatelessWidget {
       drawer: AppDrawer(),
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Saved Loan'),
+        title: Text('Saved Loans'),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(20),
@@ -32,35 +44,9 @@ class LoanListScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: LoanList(),
+      body: LoanList(actionCallback: actionCallback),
       backgroundColor: themeWhite,
-      bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20),
-          topLeft: Radius.circular(20),
-        ),
-        child: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MaterialCommunityIcons.account_minus),
-              title: Text('Borrowed'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MaterialCommunityIcons.account_plus),
-              title: Text('Lend'),
-            ),
-          ],
-          currentIndex: 1,
-          selectedItemColor: liteSecondaryColor,
-          unselectedItemColor: liteAccentColor,
-          backgroundColor: primaryColor,
-          onTap: null,
-        ),
-      ),
+      bottomNavigationBar: CustomNavigationBar(selectedIndex: 1),
     );
   }
 }

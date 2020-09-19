@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loan_manager/constants.dart';
-import 'package:loan_manager/methods/calculate_loan.dart';
+import 'package:loan_manager/methods/calculate_emi.dart';
+import 'package:loan_manager/methods/calculate_enddate.dart';
 import 'package:loan_manager/models/loan.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
@@ -16,8 +16,9 @@ import 'package:flutter_icons/flutter_icons.dart';
 class AddLoan extends StatefulWidget {
   final Loan loan;
   final String loanId;
+  final Function actionCallback;
 
-  const AddLoan({this.loan, this.loanId});
+  const AddLoan({this.loan, this.loanId, this.actionCallback});
 
   @override
   _AddLoanState createState() => _AddLoanState();
@@ -559,6 +560,8 @@ class _AddLoanState extends State<AddLoan> {
                     double interest =
                         double.parse(_fbKey.currentState.value['interest']);
                     double monthlyEmi = calculateEmi(amount, tenure, interest);
+                    DateTime startDate = _fbKey.currentState.value['startDate'];
+                    DateTime endDate = calculateEndDate(startDate, tenure);
 
                     Loan loan = Loan(
                       loanType: _fbKey.currentState.value['loanType'],
@@ -566,7 +569,7 @@ class _AddLoanState extends State<AddLoan> {
                       amount: amount,
                       tenure: tenure,
                       interest: interest,
-                      startDate: _fbKey.currentState.value['startDate'],
+                      startDate: startDate,
                       accountNumber: _fbKey.currentState.value['accountNumber'],
                       bankName: _fbKey.currentState.value['bankName'],
                       phone: _fbKey.currentState.value['phone'],
@@ -588,6 +591,7 @@ class _AddLoanState extends State<AddLoan> {
                       monthlyEmi: monthlyEmi,
                       totalEmi: double.parse(
                           (monthlyEmi * tenure).toStringAsFixed(2)),
+                      endDate: endDate,
                     );
 
                     if (widget.loanId != null) {
@@ -599,8 +603,12 @@ class _AddLoanState extends State<AddLoan> {
                     }
 
                     Navigator.pop(context);
+                    widget.actionCallback(true);
                   }
                 },
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
               ),
               RaisedButton(
                 color: secondaryColor,
@@ -608,6 +616,9 @@ class _AddLoanState extends State<AddLoan> {
                 onPressed: () {
                   _fbKey.currentState.reset();
                 },
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
               ),
             ],
           )

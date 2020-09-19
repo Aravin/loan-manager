@@ -28,6 +28,7 @@ class Loan {
   // calculate field
   final double monthlyEmi;
   final double totalEmi;
+  final DateTime endDate;
 
   Loan({
     this.loanType,
@@ -52,6 +53,7 @@ class Loan {
     this.moratoriumType,
     this.monthlyEmi,
     this.totalEmi,
+    this.endDate,
   });
 
   Loan.fromJson(Map<String, dynamic> json)
@@ -62,6 +64,8 @@ class Loan {
         interest = json['interest'],
         startDate =
             json['startDate'] != null ? json['startDate'].toDate() : null,
+        // calculated value
+        endDate = json['endDate'] != null ? json['endDate'].toDate() : null,
         accountNumber = json['accountNumber'],
         bankName = json['bankName'],
         phone = json['phone'],
@@ -86,6 +90,7 @@ class Loan {
         'tenure': tenure,
         'interest': interest,
         'startDate': startDate,
+        'endDate': endDate, // calculated value
         'accountNumber': accountNumber,
         'bankName': bankName,
         'phone': phone,

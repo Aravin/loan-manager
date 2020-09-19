@@ -65,7 +65,7 @@ class _AddLendState extends State<AddLend> {
         drawer: AppDrawer(),
         appBar: AppBar(
           leading: BackButton(),
-          title: Text('Add new Loan'),
+          title: Text('Add new Lend'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(20),
@@ -252,6 +252,9 @@ class _AddLendState extends State<AddLend> {
                               Navigator.pop(context);
                             }
                           },
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20.0),
+                          ),
                         ),
                         RaisedButton(
                           color: secondaryColor,
@@ -259,6 +262,9 @@ class _AddLendState extends State<AddLend> {
                           onPressed: () {
                             _fbKey.currentState.reset();
                           },
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20.0),
+                          ),
                         ),
                       ]),
                 ],

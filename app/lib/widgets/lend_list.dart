@@ -89,47 +89,52 @@ class LendList extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Container(
-                      height: 115,
-                      color: liteSecondaryColor,
-                      child: PopupMenuButton<String>(
-                        color: liteAccentColor,
-                        onSelected: (String result) {
-                          if (result == 'edit') {
-                            var lend = Lend.fromJson(document.data()['data']);
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => AddLend(
-                                        lend: lend,
-                                        lendId: document.id,
-                                      )),
-                            );
-                          }
-                          if (result == 'delete') {
-                            delete('lend', document.id)
-                                .then((value) => {
-                                      showToast("Loan Deleted Successfully ✔"),
-                                    })
-                                .catchError((onError) => {
-                                      {
-                                        showToast("Failed to Delete ❌"),
-                                      }
-                                    });
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: Container(
+                        height: 50,
+                        color: liteSecondaryColor,
+                        child: PopupMenuButton<String>(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          color: liteAccentColor,
+                          onSelected: (String result) {
+                            if (result == 'edit') {
+                              var lend = Lend.fromJson(document.data()['data']);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => AddLend(
+                                          lend: lend,
+                                          lendId: document.id,
+                                        )),
+                              );
+                            }
+                            if (result == 'delete') {
+                              delete('lend', document.id)
+                                  .then((value) => {
+                                        showToast(
+                                            "Loan Deleted Successfully ✔"),
+                                      })
+                                  .catchError((onError) => {
+                                        {
+                                          showToast("Failed to Delete ❌"),
+                                        }
+                                      });
 
-                            actionCallback(true);
-                          }
-                        },
-                        itemBuilder: (BuildContext context) =>
-                            <PopupMenuEntry<String>>[
-                          PopupMenuItem<String>(
-                            value: 'edit',
-                            child: Text('Edit'),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Text('Delete'),
-                          ),
-                        ],
+                              actionCallback(true);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
+                              value: 'edit',
+                              child: Text('Edit'),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   )

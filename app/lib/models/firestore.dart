@@ -21,9 +21,6 @@ Future<String> create(String doc, data) async {
 }
 
 Future<DocumentSnapshot> readSingle(String doc, String docId) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final user = prefs.getString('user');
-
   DocumentReference docRef =
       FirebaseFirestore.instance.collection(doc).doc(docId);
 

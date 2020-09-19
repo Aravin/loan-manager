@@ -3,8 +3,6 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_manager/constants.dart';
-import 'package:loan_manager/screens/loan/list.dart';
-import 'package:loan_manager/widgets/loan_list.dart';
 import 'package:loan_manager/screens/login.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';

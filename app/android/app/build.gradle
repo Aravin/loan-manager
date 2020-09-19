@@ -35,6 +35,7 @@ def keystoreProperties = new Properties()
 
 android {
     compileSdkVersion 28
+    ndkVersion '21.3.6528147'
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

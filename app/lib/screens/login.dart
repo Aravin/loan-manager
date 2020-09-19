@@ -189,8 +189,7 @@ class _AnonymouslySignInSectionState extends State<_AnonymouslySignInSection> {
             backgroundColor: Colors.green,
             onPressed: () async {
               try {
-                final FirebaseUser user =
-                    (await _auth.signInAnonymously()).user;
+                final User user = (await _auth.signInAnonymously()).user;
 
                 setLoginInformation(user);
 
@@ -304,7 +303,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   // Example code of how to sign in with email and password.
   void _signInWithEmailAndPassword() async {
     try {
-      final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+      final User user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       ))
@@ -382,7 +381,7 @@ class _GoogleSignInState extends State<_GoogleSignIn> {
       );
     } catch (e) {
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Failed to sign in with Google: ${e}"),
+        content: Text("Failed to sign in with Google: $e"),
       ));
     }
   }
@@ -485,7 +484,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Example code for registration.
   void _register() async {
-    FirebaseUser user;
+    User user;
     try {
       user = (await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,

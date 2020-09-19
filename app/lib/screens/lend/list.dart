@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/screens/lend/add.dart';
+import 'package:loan_manager/widgets/bottom_navigation_bar.dart';
 import 'package:loan_manager/widgets/drawer.dart';
 import 'package:loan_manager/widgets/lend_list.dart';
 
@@ -28,14 +28,14 @@ class _LendListScreenState extends State<LendListScreen> {
             MaterialPageRoute(builder: (context) => AddLend()),
           );
         },
-        label: Text('Add new Loan'),
+        label: Text('Add new Lend'),
         icon: Icon(Icons.add),
         backgroundColor: secondaryColor,
       ),
       drawer: AppDrawer(),
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Saved Loan'),
+        title: Text('Saved Lending'),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(20),
@@ -45,33 +45,7 @@ class _LendListScreenState extends State<LendListScreen> {
       ),
       body: LendList(actionCallback: actionCallback),
       backgroundColor: themeWhite,
-      bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20),
-          topLeft: Radius.circular(20),
-        ),
-        child: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MaterialCommunityIcons.account_minus),
-              title: Text('Borrowed'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MaterialCommunityIcons.account_plus),
-              title: Text('Lend'),
-            ),
-          ],
-          currentIndex: 2,
-          selectedItemColor: liteSecondaryColor,
-          unselectedItemColor: liteAccentColor,
-          backgroundColor: primaryColor,
-          onTap: null,
-        ),
-      ),
+      bottomNavigationBar: CustomNavigationBar(selectedIndex: 2),
     );
   }
 }
