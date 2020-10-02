@@ -5,5 +5,5 @@ double calculatePaid(DateTime startDate, double monthlyEmi) {
   Jiffy startJiff = Jiffy(startDate);
 
   int diffInMonth = currTime.diff(startJiff, Units.MONTH);
-  return diffInMonth * monthlyEmi;
+  return double.parse((diffInMonth * monthlyEmi).toStringAsFixed(2));
 }

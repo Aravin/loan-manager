@@ -25,7 +25,8 @@ class _LendListScreenState extends State<LendListScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddLend()),
+            MaterialPageRoute(
+                builder: (context) => AddLend(actionCallback: actionCallback)),
           );
         },
         label: Text('Add new Lend'),
@@ -44,8 +45,7 @@ class _LendListScreenState extends State<LendListScreen> {
         ),
       ),
       body: LendList(actionCallback: actionCallback),
-      backgroundColor: themeWhite,
-      bottomNavigationBar: CustomNavigationBar(selectedIndex: 2),
+      bottomNavigationBar: CustomNavigationBar(currentIndex: 2),
     );
   }
 }

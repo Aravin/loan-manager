@@ -2,29 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/screens/home.dart';
-import 'package:loan_manager/widgets/lend_list.dart';
-import 'package:loan_manager/widgets/loan_list.dart';
+import 'package:loan_manager/screens/lend/list.dart';
+import 'package:loan_manager/screens/loan/list.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  final int selectedIndex;
+  final int currentIndex;
 
-  CustomNavigationBar({this.selectedIndex});
+  CustomNavigationBar({this.currentIndex});
 
   @override
   _CustomNavigationBarState createState() => _CustomNavigationBarState();
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  void _onItemTapped(int index) {
+  void _onItemTapped(int selectedIndex) {
+    if (selectedIndex == widget.currentIndex) {
+      return;
+    }
     var page;
-    if (index == 0) {
+    if (selectedIndex == 0) {
       page = Home();
     }
-    if (index == 1) {
-      page = LoanList();
+    if (selectedIndex == 1) {
+      page = LoanListScreen();
     }
-    if (index == 2) {
-      page = LendList();
+    if (selectedIndex == 2) {
+      page = LendListScreen();
     }
 
     Navigator.push(
@@ -55,7 +58,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             title: Text('Lend'),
           ),
         ],
-        currentIndex: widget.selectedIndex,
+        currentIndex: widget.currentIndex,
         selectedItemColor: liteSecondaryColor,
         unselectedItemColor: liteAccentColor,
         backgroundColor: primaryColor,

@@ -46,7 +46,7 @@ class _LoanListScreenState extends State<LoanListScreen> {
       ),
       body: LoanList(actionCallback: actionCallback),
       backgroundColor: themeWhite,
-      bottomNavigationBar: CustomNavigationBar(selectedIndex: 1),
+      bottomNavigationBar: CustomNavigationBar(currentIndex: 1),
     );
   }
 }

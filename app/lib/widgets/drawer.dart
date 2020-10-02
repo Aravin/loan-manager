@@ -3,32 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:loan_manager/constants.dart';
+import 'package:loan_manager/methods/app_share.dart';
+import 'package:loan_manager/methods/launch_url.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/screens/lend/list.dart';
 import 'package:loan_manager/screens/loan/list.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_share/flutter_share.dart';
-
-_launchURL() async {
-  const url =
-      'https://play.google.com/store/apps/details?id=io.epix.loan_manager';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-
-Future<void> share() async {
-  await FlutterShare.share(
-      title: 'Loan Manager',
-      text: 'Loan Manager',
-      linkUrl:
-          'https://play.google.com/store/apps/details?id=io.epix.loan_manager',
-      chooserTitle: 'Share Loan Manager App');
-}
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -145,7 +126,7 @@ class _AppDrawerState extends State<AppDrawer> {
               onTap: () {
                 setState(() {
                   Navigator.pop(context);
-                  _launchURL();
+                  launchURL();
                 });
               },
             ),

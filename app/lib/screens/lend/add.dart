@@ -14,8 +14,9 @@ import 'package:flutter_icons/flutter_icons.dart';
 class AddLend extends StatefulWidget {
   final Lend lend;
   final String lendId;
+  final Function actionCallback;
 
-  const AddLend({this.lend, this.lendId});
+  const AddLend({this.lend, this.lendId, this.actionCallback});
 
   @override
   _AddLendState createState() => _AddLendState();
@@ -102,7 +103,7 @@ class _AddLendState extends State<AddLend> {
                     focusNode: contactPersonFocus,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Contact Person",
+                      labelText: "Contact Person*",
                       prefixIcon: Icon(Icons.contacts),
                     ),
                     validators: [],
@@ -115,7 +116,7 @@ class _AddLendState extends State<AddLend> {
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Loan Amount",
+                      labelText: "Loan Amount*",
                       prefixIcon: Icon(FontAwesome.money),
                     ),
                     validators: [
@@ -133,7 +134,7 @@ class _AddLendState extends State<AddLend> {
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: "Loan Interest (in %)",
+                      labelText: "Loan Interest (in %)*",
                       prefixIcon: Icon(MaterialCommunityIcons.percent),
                     ),
                     validators: [
@@ -151,7 +152,7 @@ class _AddLendState extends State<AddLend> {
                     inputType: InputType.date,
                     format: DateFormat("dd-MMM-yyyy"),
                     decoration: InputDecoration(
-                      labelText: "Loan Start Date",
+                      labelText: "Lend Date*",
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
                     validators: [
@@ -181,7 +182,7 @@ class _AddLendState extends State<AddLend> {
                       prefixIcon: Icon(Icons.phone),
                     ),
                     validators: [
-                      FormBuilderValidators.required(),
+                      // FormBuilderValidators.required(),
                     ],
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(emailFocus),
@@ -249,7 +250,9 @@ class _AddLendState extends State<AddLend> {
                                 lend.saveLend();
                                 showToast("Loan Saved Successfully ✔");
                               }
-                              Navigator.pop(context);
+
+                              widget.actionCallback(true);
+                              Navigator.pop(context, true);
                             }
                           },
                           shape: new RoundedRectangleBorder(

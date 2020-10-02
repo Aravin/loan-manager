@@ -493,43 +493,43 @@ class _AddLoanState extends State<AddLoan> {
                                       FocusScope.of(context)
                                           .requestFocus(moratoriumFocus),
                                 ),
-                                FormBuilderSwitch(
-                                  attribute: "moratorium",
-                                  focusNode: moratoriumFocus,
-                                  label: Text('Enrollment (Yes/No)'),
-                                  decoration: InputDecoration(
-                                    labelText: "Moratorium",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.minus_box),
-                                    border: InputBorder.none,
-                                  ),
-                                  initialValue: false,
-                                ),
-                                FormBuilderTouchSpin(
-                                  attribute: "moratoriumMonth",
-                                  decoration: InputDecoration(
-                                    labelText: "Moratorium Month",
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(top: 0),
-                                  ),
-                                  initialValue: 0,
-                                  step: 1,
-                                ),
-                                FormBuilderRadioGroup(
-                                  attribute: "moratoriumType",
-                                  decoration: InputDecoration(
-                                    labelText: "Moratorium Type",
-                                    contentPadding: EdgeInsets.only(top: 0),
-                                  ),
-                                  validators: [],
-                                  options: [
-                                    "Loan Tenure",
-                                    "Loan Amount (EMI)",
-                                  ]
-                                      .map((lang) =>
-                                          FormBuilderFieldOption(value: lang))
-                                      .toList(growable: false),
-                                ),
+                                // FormBuilderSwitch(
+                                //   attribute: "moratorium",
+                                //   focusNode: moratoriumFocus,
+                                //   label: Text('Enrollment (Yes/No)'),
+                                //   decoration: InputDecoration(
+                                //     labelText: "Moratorium",
+                                //     prefixIcon:
+                                //         Icon(MaterialCommunityIcons.minus_box),
+                                //     border: InputBorder.none,
+                                //   ),
+                                //   initialValue: false,
+                                // ),
+                                // FormBuilderTouchSpin(
+                                //   attribute: "moratoriumMonth",
+                                //   decoration: InputDecoration(
+                                //     labelText: "Moratorium Month",
+                                //     border: InputBorder.none,
+                                //     contentPadding: EdgeInsets.only(top: 0),
+                                //   ),
+                                //   initialValue: 0,
+                                //   step: 1,
+                                // ),
+                                // FormBuilderRadioGroup(
+                                //   attribute: "moratoriumType",
+                                //   decoration: InputDecoration(
+                                //     labelText: "Moratorium Type",
+                                //     contentPadding: EdgeInsets.only(top: 0),
+                                //   ),
+                                //   validators: [],
+                                //   options: [
+                                //     "Loan Tenure",
+                                //     "Loan Amount (EMI)",
+                                //   ]
+                                //       .map((lang) =>
+                                //           FormBuilderFieldOption(value: lang))
+                                //       .toList(growable: false),
+                                // ),
                               ],
                             ),
                           ],
@@ -602,8 +602,8 @@ class _AddLoanState extends State<AddLoan> {
                       showToast("Loan Saved Successfully ✔");
                     }
 
-                    Navigator.pop(context);
                     widget.actionCallback(true);
+                    Navigator.pop(context, true);
                   }
                 },
                 shape: new RoundedRectangleBorder(
