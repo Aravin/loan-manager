@@ -1,1 +1,2 @@
-app/android/app/release/app-release.aab
+**/**.aab
+**/**.apk

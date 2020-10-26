@@ -6,14 +6,11 @@ import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/screens/login.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 FirebaseAnalytics analytics;
 
 main() {
   analytics = FirebaseAnalytics();
-  FirebaseCrashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(App());

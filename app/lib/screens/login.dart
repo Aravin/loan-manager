@@ -68,7 +68,11 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    child: Image.asset('assets/logo.png'),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      height: 175,
+                      width: 175,
+                    ),
                     padding: const EdgeInsets.all(16),
                   ),
                   Container(
