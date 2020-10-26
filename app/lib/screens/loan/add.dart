@@ -50,8 +50,27 @@ class _AddLoanState extends State<AddLoan> {
   int tenureMultiple = 12; // year (1) or month (12)
 
   final FocusNode moratoriumFocus = FocusNode();
-
   AppUser loggedUser;
+
+  // steps
+  int currentStep = 0;
+  bool complete = false;
+
+  next() {
+    currentStep + 1 != 3
+        ? goTo(currentStep + 1)
+        : setState(() => complete = true);
+  }
+
+  cancel() {
+    if (currentStep > 0) {
+      goTo(currentStep - 1);
+    }
+  }
+
+  goTo(int step) {
+    setState(() => currentStep = step);
+  }
 
   _getLoginInformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -102,7 +121,7 @@ class _AddLoanState extends State<AddLoan> {
                     ? widget.loan?.amount.toString()
                     : '',
                 'tenure': widget.loan?.tenure != null
-                    ? widget.loan?.tenure.toString()
+                    ? (widget.loan.tenure / 12).toString()
                     : '',
                 'interest': widget.loan?.interest != null
                     ? widget.loan?.interest.toString()
@@ -148,396 +167,364 @@ class _AddLoanState extends State<AddLoan> {
                     : null,
               },
               autovalidate: false,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: DefaultTabController(
-                      length: 3,
-                      child: Scaffold(
-                        appBar: TabBar(
-                          indicatorColor: secondaryColor,
-                          labelColor: primaryColor,
-                          tabs: [
-                            Tab(text: 'Required*'),
-                            Tab(text: 'Bank Details'),
-                            Tab(text: 'Other Details'),
+              child: Stepper(
+                type: StepperType.horizontal,
+                steps: [
+                  Step(
+                    title: Text('Required'),
+                    isActive: currentStep == 0 ? true : false,
+                    content: Column(
+                      children: [
+                        FormBuilderDropdown(
+                          // autofocus: true,
+                          attribute: "loanType",
+                          focusNode: accountNameFocus,
+                          decoration: InputDecoration(
+                            labelText: "Loan Type",
+                            prefixIcon:
+                                Icon(MaterialCommunityIcons.account_search),
+                          ),
+                          // initialValue: 'Male',
+                          hint: Text('Loan Type'),
+                          validators: [FormBuilderValidators.required()],
+                          items: [
+                            'Personal Loan',
+                            'Home Loan',
+                            'Gold Loan',
+                            'Auto Loan',
+                            'Education Loan',
+                            'Other Loan'
+                          ]
+                              .map((loanType) => DropdownMenuItem(
+                                  value: loanType, child: Text("$loanType")))
+                              .toList(),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "accountName",
+                          focusNode: accountNameFocus,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Account's Nick Name",
+                            prefixIcon: Icon(AntDesign.idcard),
+                          ),
+                          validators: [
+                            FormBuilderValidators.minLength(2),
+                            FormBuilderValidators.maxLength(25),
+                          ],
+                          onEditingComplete: () =>
+                              FocusScope.of(context).requestFocus(amountFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "amount",
+                          focusNode: amountFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Principal Loan Amount",
+                            prefixIcon: Icon(FontAwesome.money),
+                          ),
+                          validators: [
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.numeric(),
+                            FormBuilderValidators.min(500),
+                            FormBuilderValidators.max(10000000),
+                          ],
+                          onEditingComplete: () =>
+                              FocusScope.of(context).requestFocus(tenureFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "tenure",
+                          focusNode: tenureFocus,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Loan Tenure",
+                            prefixIcon: Icon(MaterialCommunityIcons.timetable),
+                            suffixText: this.loanTenureLabel,
+                            suffixIcon: IconButton(
+                              icon: Icon(FontAwesome.exchange),
+                              onPressed: () => {
+                                setState(() {
+                                  if (this.loanTenureLabel == 'Month') {
+                                    this.loanTenureLabel = 'Year';
+                                    this.tenureMultiple = 12;
+                                  } else {
+                                    this.loanTenureLabel = 'Month';
+                                    this.tenureMultiple = 1;
+                                  }
+                                })
+                              },
+                            ),
+                          ),
+                          validators: [
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.numeric(),
+                            FormBuilderValidators.min(0.3),
+                            FormBuilderValidators.max(40 * 12),
+                          ],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(interestFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "interest",
+                          focusNode: interestFocus,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: "Loan Interest (in %)",
+                            prefixIcon: Icon(MaterialCommunityIcons.percent),
+                          ),
+                          validators: [
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.numeric(),
+                            FormBuilderValidators.min(6.0),
+                            FormBuilderValidators.max(40),
+                          ],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(startDateFocus),
+                        ),
+                        // FormBuilderSlider(
+                        //   attribute: "interest",
+                        //   validators: [FormBuilderValidators.min(6)],
+                        //   min: 6.0,
+                        //   max: 36.0,
+                        //   initialValue: 10.5,
+                        //   decoration: InputDecoration(
+                        //     labelText: "Loan Interest (in %)",
+                        //   ),
+                        //   activeColor: primaryColor,
+                        //   inactiveColor: accentColor,
+                        // ),
+                        // FormBuilderSlider(
+                        //   attribute: "tenure",
+                        //   validators: [FormBuilderValidators.min(6)],
+                        //   min: 1.0,
+                        //   max: 30.0,
+                        //   initialValue: 2,
+                        //   decoration: InputDecoration(
+                        //     labelText: "Loan Tenure (in Years)",
+                        //   ),
+                        //   activeColor: primaryColor,
+                        //   inactiveColor: accentColor,
+                        // ),
+                        FormBuilderDateTimePicker(
+                          attribute: "startDate",
+                          focusNode: startDateFocus,
+                          textInputAction: TextInputAction.next,
+                          inputType: InputType.date,
+                          format: DateFormat("dd-MMM-yyyy"),
+                          decoration: InputDecoration(
+                            labelText: "Loan Start Date",
+                            prefixIcon: Icon(Icons.calendar_today),
+                          ),
+                          validators: [
+                            FormBuilderValidators.required(),
                           ],
                         ),
-                        body: TabBarView(
-                          children: [
-                            ListView(
-                              padding: EdgeInsets.all(10.0),
-                              children: [
-                                FormBuilderDropdown(
-                                  // autofocus: true,
-                                  attribute: "loanType",
-                                  focusNode: accountNameFocus,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Type",
-                                    prefixIcon: Icon(
-                                        MaterialCommunityIcons.account_search),
-                                  ),
-                                  // initialValue: 'Male',
-                                  hint: Text('Loan Type'),
-                                  validators: [
-                                    FormBuilderValidators.required()
-                                  ],
-                                  items: [
-                                    'Personal Loan',
-                                    'Home Loan',
-                                    'Gold Loan',
-                                    'Auto Loan',
-                                    'Education Loan',
-                                    'Other Loan'
-                                  ]
-                                      .map((loanType) => DropdownMenuItem(
-                                          value: loanType,
-                                          child: Text("$loanType")))
-                                      .toList(),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "accountName",
-                                  focusNode: accountNameFocus,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Account's Nick Name",
-                                    prefixIcon: Icon(AntDesign.idcard),
-                                  ),
-                                  validators: [
-                                    FormBuilderValidators.minLength(2),
-                                    FormBuilderValidators.maxLength(25),
-                                  ],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(amountFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "amount",
-                                  focusNode: amountFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Principal Loan Amount",
-                                    prefixIcon: Icon(FontAwesome.money),
-                                  ),
-                                  validators: [
-                                    FormBuilderValidators.required(),
-                                    FormBuilderValidators.numeric(),
-                                    FormBuilderValidators.min(500),
-                                    FormBuilderValidators.max(10000000),
-                                  ],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(tenureFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "tenure",
-                                  focusNode: tenureFocus,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Tenure",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.timetable),
-                                    suffixText: this.loanTenureLabel,
-                                    suffixIcon: IconButton(
-                                      icon: Icon(FontAwesome.exchange),
-                                      onPressed: () => {
-                                        setState(() {
-                                          if (this.loanTenureLabel == 'Month') {
-                                            this.loanTenureLabel = 'Year';
-                                            this.tenureMultiple = 12;
-                                          } else {
-                                            this.loanTenureLabel = 'Month';
-                                            this.tenureMultiple = 1;
-                                          }
-                                        })
-                                      },
-                                    ),
-                                  ),
-                                  validators: [
-                                    FormBuilderValidators.required(),
-                                    FormBuilderValidators.numeric(),
-                                    FormBuilderValidators.min(0.3),
-                                    FormBuilderValidators.max(40 * 12),
-                                  ],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(interestFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "interest",
-                                  focusNode: interestFocus,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Interest (in %)",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.percent),
-                                  ),
-                                  validators: [
-                                    FormBuilderValidators.required(),
-                                    FormBuilderValidators.numeric(),
-                                    FormBuilderValidators.min(6.0),
-                                    FormBuilderValidators.max(40),
-                                  ],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(startDateFocus),
-                                ),
-                                // FormBuilderSlider(
-                                //   attribute: "interest",
-                                //   validators: [FormBuilderValidators.min(6)],
-                                //   min: 6.0,
-                                //   max: 36.0,
-                                //   initialValue: 10.5,
-                                //   decoration: InputDecoration(
-                                //     labelText: "Loan Interest (in %)",
-                                //   ),
-                                //   activeColor: primaryColor,
-                                //   inactiveColor: accentColor,
-                                // ),
-                                // FormBuilderSlider(
-                                //   attribute: "tenure",
-                                //   validators: [FormBuilderValidators.min(6)],
-                                //   min: 1.0,
-                                //   max: 30.0,
-                                //   initialValue: 2,
-                                //   decoration: InputDecoration(
-                                //     labelText: "Loan Tenure (in Years)",
-                                //   ),
-                                //   activeColor: primaryColor,
-                                //   inactiveColor: accentColor,
-                                // ),
-                                FormBuilderDateTimePicker(
-                                  attribute: "startDate",
-                                  focusNode: startDateFocus,
-                                  textInputAction: TextInputAction.next,
-                                  inputType: InputType.date,
-                                  format: DateFormat("dd-MMM-yyyy"),
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Start Date",
-                                    prefixIcon: Icon(Icons.calendar_today),
-                                  ),
-                                  validators: [
-                                    FormBuilderValidators.required(),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            ListView(
-                              padding: EdgeInsets.all(10.0),
-                              children: [
-                                FormBuilderTextField(
-                                  attribute: "accountNumber",
-                                  focusNode: accountNumberFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Bank Account Number",
-                                    prefixIcon: Icon(
-                                        MaterialCommunityIcons.sort_numeric),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(bankNameFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "bankName",
-                                  focusNode: bankNameFocus,
-                                  keyboardType: TextInputType.text,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                      labelText: "Bank Name",
-                                      prefixIcon:
-                                          Icon(MaterialCommunityIcons.bank)),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(phoneFocus),
-                                ),
-                                FormBuilderPhoneField(
-                                  attribute: "phone",
-                                  focusNode: phoneFocus,
-                                  keyboardType: TextInputType.phone,
-                                  defaultSelectedCountryIsoCode: 'IN',
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Bank Phone Number",
-                                    prefixIcon: Icon(Icons.phone),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(emailFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "email",
-                                  focusNode: emailFocus,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Bank Email",
-                                    prefixIcon: Icon(Icons.email),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(contactPersonFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "contactPerson",
-                                  focusNode: contactPersonFocus,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Contact Person",
-                                    prefixIcon: Icon(Icons.contacts),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(otherLoanInfoFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "otherLoanInfo",
-                                  focusNode: otherLoanInfoFocus,
-                                  textInputAction: TextInputAction.done,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    labelText: "Additional Info",
-                                    prefixIcon: Icon(Icons.more),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(loanPartPaymentFocus),
-                                ),
-                              ],
-                            ),
-                            ListView(
-                              padding: EdgeInsets.all(10.0),
-                              children: [
-                                FormBuilderTextField(
-                                  attribute: "partPayment",
-                                  focusNode: loanPartPaymentFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Part Payment",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.plus_box),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context).requestFocus(
-                                          loanAdvancePaymentFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "advancePayment",
-                                  focusNode: loanAdvancePaymentFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Advance Payment",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.plus_box),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(loanProcessingFeeFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "processingFee",
-                                  focusNode: loanProcessingFeeFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Processing Fee",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.minus_box),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(loanInsuranceFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "insuranceCharges",
-                                  focusNode: loanInsuranceFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Loan Insurance",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.minus_box),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(loanOtherChargesFocus),
-                                ),
-                                FormBuilderTextField(
-                                  attribute: "otherCharges",
-                                  focusNode: loanOtherChargesFocus,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: "Other Loan Charges",
-                                    prefixIcon:
-                                        Icon(MaterialCommunityIcons.minus_box),
-                                  ),
-                                  validators: [],
-                                  onEditingComplete: () =>
-                                      FocusScope.of(context)
-                                          .requestFocus(moratoriumFocus),
-                                ),
-                                // FormBuilderSwitch(
-                                //   attribute: "moratorium",
-                                //   focusNode: moratoriumFocus,
-                                //   label: Text('Enrollment (Yes/No)'),
-                                //   decoration: InputDecoration(
-                                //     labelText: "Moratorium",
-                                //     prefixIcon:
-                                //         Icon(MaterialCommunityIcons.minus_box),
-                                //     border: InputBorder.none,
-                                //   ),
-                                //   initialValue: false,
-                                // ),
-                                // FormBuilderTouchSpin(
-                                //   attribute: "moratoriumMonth",
-                                //   decoration: InputDecoration(
-                                //     labelText: "Moratorium Month",
-                                //     border: InputBorder.none,
-                                //     contentPadding: EdgeInsets.only(top: 0),
-                                //   ),
-                                //   initialValue: 0,
-                                //   step: 1,
-                                // ),
-                                // FormBuilderRadioGroup(
-                                //   attribute: "moratoriumType",
-                                //   decoration: InputDecoration(
-                                //     labelText: "Moratorium Type",
-                                //     contentPadding: EdgeInsets.only(top: 0),
-                                //   ),
-                                //   validators: [],
-                                //   options: [
-                                //     "Loan Tenure",
-                                //     "Loan Amount (EMI)",
-                                //   ]
-                                //       .map((lang) =>
-                                //           FormBuilderFieldOption(value: lang))
-                                //       .toList(growable: false),
-                                // ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
                   ),
+                  Step(
+                    isActive: currentStep == 1 ? true : false,
+                    title: Text('Bank Details'),
+                    content: Column(
+                      children: [
+                        FormBuilderTextField(
+                          attribute: "accountNumber",
+                          focusNode: accountNumberFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Bank Account Number",
+                            prefixIcon:
+                                Icon(MaterialCommunityIcons.sort_numeric),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(bankNameFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "bankName",
+                          focusNode: bankNameFocus,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: "Bank Name",
+                              prefixIcon: Icon(MaterialCommunityIcons.bank)),
+                          validators: [],
+                          onEditingComplete: () =>
+                              FocusScope.of(context).requestFocus(phoneFocus),
+                        ),
+                        FormBuilderPhoneField(
+                          attribute: "phone",
+                          focusNode: phoneFocus,
+                          keyboardType: TextInputType.phone,
+                          defaultSelectedCountryIsoCode: 'IN',
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Bank Phone Number",
+                            prefixIcon: Icon(Icons.phone),
+                          ),
+                          validators: [],
+                          onEditingComplete: () =>
+                              FocusScope.of(context).requestFocus(emailFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "email",
+                          focusNode: emailFocus,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Bank Email",
+                            prefixIcon: Icon(Icons.email),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(contactPersonFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "contactPerson",
+                          focusNode: contactPersonFocus,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Contact Person",
+                            prefixIcon: Icon(Icons.contacts),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(otherLoanInfoFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "otherLoanInfo",
+                          focusNode: otherLoanInfoFocus,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            labelText: "Additional Info",
+                            prefixIcon: Icon(Icons.more),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(loanPartPaymentFocus),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Step(
+                    isActive: currentStep == 2 ? true : false,
+                    title: Text('Other'),
+                    content: Column(
+                      children: [
+                        FormBuilderTextField(
+                          attribute: "partPayment",
+                          focusNode: loanPartPaymentFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Loan Part Payment",
+                            prefixIcon: Icon(MaterialCommunityIcons.plus_box),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(loanAdvancePaymentFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "advancePayment",
+                          focusNode: loanAdvancePaymentFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Advance Payment",
+                            prefixIcon: Icon(MaterialCommunityIcons.plus_box),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(loanProcessingFeeFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "processingFee",
+                          focusNode: loanProcessingFeeFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Loan Processing Fee",
+                            prefixIcon: Icon(MaterialCommunityIcons.minus_box),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(loanInsuranceFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "insuranceCharges",
+                          focusNode: loanInsuranceFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Loan Insurance",
+                            prefixIcon: Icon(MaterialCommunityIcons.minus_box),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(loanOtherChargesFocus),
+                        ),
+                        FormBuilderTextField(
+                          attribute: "otherCharges",
+                          focusNode: loanOtherChargesFocus,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Other Loan Charges",
+                            prefixIcon: Icon(MaterialCommunityIcons.minus_box),
+                          ),
+                          validators: [],
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(moratoriumFocus),
+                        ),
+                        // FormBuilderSwitch(
+                        //   attribute: "moratorium",
+                        //   focusNode: moratoriumFocus,
+                        //   label: Text('Enrollment (Yes/No)'),
+                        //   decoration: InputDecoration(
+                        //     labelText: "Moratorium",
+                        //     prefixIcon:
+                        //         Icon(MaterialCommunityIcons.minus_box),
+                        //     border: InputBorder.none,
+                        //   ),
+                        //   initialValue: false,
+                        // ),
+                        // FormBuilderTouchSpin(
+                        //   attribute: "moratoriumMonth",
+                        //   decoration: InputDecoration(
+                        //     labelText: "Moratorium Month",
+                        //     border: InputBorder.none,
+                        //     contentPadding: EdgeInsets.only(top: 0),
+                        //   ),
+                        //   initialValue: 0,
+                        //   step: 1,
+                        // ),
+                        // FormBuilderRadioGroup(
+                        //   attribute: "moratoriumType",
+                        //   decoration: InputDecoration(
+                        //     labelText: "Moratorium Type",
+                        //     contentPadding: EdgeInsets.only(top: 0),
+                        //   ),
+                        //   validators: [],
+                        //   options: [
+                        //     "Loan Tenure",
+                        //     "Loan Amount (EMI)",
+                        //   ]
+                        //       .map((lang) =>
+                        //           FormBuilderFieldOption(value: lang))
+                        //       .toList(growable: false),
+                        // ),
+                      ],
+                    ),
+                  )
                 ],
+                currentStep: currentStep,
+                onStepContinue: next,
+                onStepTapped: (step) => goTo(step),
+                onStepCancel: cancel,
               ),
             ),
           ),
