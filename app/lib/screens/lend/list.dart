@@ -6,17 +6,15 @@ import 'package:loan_manager/widgets/drawer.dart';
 import 'package:loan_manager/widgets/lend_list.dart';
 
 class LendListScreen extends StatefulWidget {
+  const LendListScreen({this.actionCallback});
+
   @override
   _LendListScreenState createState() => _LendListScreenState();
+
+  final Function actionCallback;
 }
 
 class _LendListScreenState extends State<LendListScreen> {
-  actionCallback(bool rebuild) {
-    if (rebuild) {
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +24,8 @@ class _LendListScreenState extends State<LendListScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AddLend(actionCallback: actionCallback)),
+                builder: (context) =>
+                    AddLend(actionCallback: widget.actionCallback)),
           );
         },
         label: Text('Add new Lend'),
@@ -44,7 +43,7 @@ class _LendListScreenState extends State<LendListScreen> {
           ),
         ),
       ),
-      body: LendList(actionCallback: actionCallback),
+      body: LendList(actionCallback: widget.actionCallback),
       bottomNavigationBar: CustomNavigationBar(currentIndex: 2),
     );
   }

@@ -32,123 +32,129 @@ class LoanList extends StatelessWidget {
         }
 
         return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
-            return ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              child: Card(
-                margin: appPaddingXS,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 11,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(
-                              '${document.data()['data']['accountName']} - ${document.data()['data']['loanType']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+          children: snapshot.data.docs.map(
+            (DocumentSnapshot document) {
+              return ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: Card(
+                  margin: appPaddingXS,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 11,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(
+                                '${document.data()['data']['accountName']} - ${document.data()['data']['loanType']}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                  'Loan Amount ${document.data()['data']['amount']}'),
+                              trailing: Text(
+                                  'Montly EMI ₹${document.data()['data']['monthlyEmi']}'),
                             ),
-                            subtitle: Text(
-                                'Loan Amount ${document.data()['data']['amount']}'),
-                            trailing: Text(
-                                'Montly EMI ₹${document.data()['data']['monthlyEmi']}'),
-                          ),
-                          Container(
-                            padding: appPaddingM,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                    'Payable ₹${document.data()['data']['totalEmi']}'),
-                                Text(
-                                    'Paid ₹${calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi'])}'),
+                            Container(
+                              padding: appPaddingM,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      'Payable ₹${document.data()['data']['totalEmi']}'),
+                                  Text(
+                                      'Paid ₹${calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi'])}'),
+                                ],
+                              ),
+                            ),
+                            LinearPercentIndicator(
+                              lineHeight: 15.0,
+                              percent: calculatePaidPercent(
+                                      calculatePaid(
+                                          document
+                                              .data()['data']['startDate']
+                                              .toDate(),
+                                          document.data()['data']
+                                              ['monthlyEmi']),
+                                      document.data()['data']['totalEmi']) /
+                                  100,
+                              backgroundColor: liteSecondaryColor,
+                              progressColor: secondaryColor,
+                              animation: true,
+                              animationDuration: 1000,
+                              center: Text(
+                                '${calculatePaidPercent(calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi']), document.data()['data']['totalEmi'])}% paid',
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.5)
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          child: Container(
+                            height: 50,
+                            color: liteAccentColor,
+                            child: PopupMenuButton<String>(
+                              padding: EdgeInsets.symmetric(vertical: 0),
+                              color: liteSecondaryColor,
+                              onSelected: (String result) {
+                                if (result == 'edit') {
+                                  var loan =
+                                      Loan.fromJson(document.data()['data']);
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => AddLoan(
+                                              loan: loan,
+                                              loanId: document.id,
+                                              actionCallback:
+                                                  this.actionCallback,
+                                            )),
+                                  );
+                                }
+                                if (result == 'delete') {
+                                  delete('loan', document.id)
+                                      .then((value) => {
+                                            showToast(
+                                                "Loan Deleted Successfully ✔"),
+                                          })
+                                      .catchError((onError) => {
+                                            {
+                                              showToast("Failed to Delete ❌"),
+                                            }
+                                          });
+
+                                  actionCallback(true);
+                                }
+                              },
+                              itemBuilder: (BuildContext context) =>
+                                  <PopupMenuEntry<String>>[
+                                PopupMenuItem<String>(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Text('Delete'),
+                                ),
                               ],
                             ),
                           ),
-                          LinearPercentIndicator(
-                            lineHeight: 15.0,
-                            percent: calculatePaidPercent(
-                                    calculatePaid(
-                                        document
-                                            .data()['data']['startDate']
-                                            .toDate(),
-                                        document.data()['data']['monthlyEmi']),
-                                    document.data()['data']['totalEmi']) /
-                                100,
-                            backgroundColor: liteSecondaryColor,
-                            progressColor: secondaryColor,
-                            animation: true,
-                            animationDuration: 1000,
-                            center: Text(
-                              '${calculatePaidPercent(calculatePaid(document.data()['data']['startDate'].toDate(), document.data()['data']['monthlyEmi']), document.data()['data']['totalEmi'])}% paid',
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 12.5)
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          height: 50,
-                          color: liteAccentColor,
-                          child: PopupMenuButton<String>(
-                            padding: EdgeInsets.symmetric(vertical: 0),
-                            color: liteSecondaryColor,
-                            onSelected: (String result) {
-                              if (result == 'edit') {
-                                var loan =
-                                    Loan.fromJson(document.data()['data']);
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => AddLoan(
-                                            loan: loan,
-                                            loanId: document.id,
-                                          )),
-                                );
-                              }
-                              if (result == 'delete') {
-                                delete('loan', document.id)
-                                    .then((value) => {
-                                          showToast(
-                                              "Loan Deleted Successfully ✔"),
-                                        })
-                                    .catchError((onError) => {
-                                          {
-                                            showToast("Failed to Delete ❌"),
-                                          }
-                                        });
-
-                                actionCallback(true);
-                              }
-                            },
-                            itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                value: 'edit',
-                                child: Text('Edit'),
-                              ),
-                              PopupMenuItem<String>(
-                                value: 'delete',
-                                child: Text('Delete'),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            },
+          ).toList(),
         );
       },
     );

@@ -36,8 +36,9 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   void initState() {
-    getLoginInformation();
     super.initState();
+
+    getLoginInformation();
   }
 
   @override
@@ -89,7 +90,9 @@ class _AppDrawerState extends State<AppDrawer> {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoanListScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => LoanListScreen(),
+                    ),
                   );
                 });
               },
@@ -102,7 +105,9 @@ class _AppDrawerState extends State<AppDrawer> {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LendListScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => LendListScreen(),
+                    ),
                   );
                 });
               },

@@ -208,7 +208,9 @@ class _HomeState extends State<Home> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoanListScreen()),
+                                    builder: (context) => LoanListScreen(
+                                        actionCallback: actionCallback),
+                                  ),
                                 ).then((value) => setState(() => {}))
                               },
                               icon: Icon(MaterialIcons.account_balance),
@@ -223,8 +225,9 @@ class _HomeState extends State<Home> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddLoan(
-                                          actionCallback: actionCallback)),
+                                    builder: (context) =>
+                                        AddLoan(actionCallback: actionCallback),
+                                  ),
                                 ).then((value) => setState(() => {}))
                               },
                               icon: Icon(Icons.add_box),
@@ -274,7 +277,8 @@ class _HomeState extends State<Home> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LendListScreen()),
+                                      builder: (context) => LendListScreen(
+                                          actionCallback: actionCallback)),
                                 ).then((value) => setState(() => {}))
                               },
                               icon: Icon(MaterialIcons.account_balance_wallet),

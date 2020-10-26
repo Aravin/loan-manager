@@ -250,7 +250,7 @@ class _AddLendState extends State<AddLend> {
                                 showToast("Loan Saved Successfully ✔");
                               }
 
-                              widget.actionCallback(true);
+                              widget.actionCallback != null ?? widget.actionCallback(true);
                               Navigator.pop(context, true);
                             }
                           },

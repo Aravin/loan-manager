@@ -6,6 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loan_manager/constants.dart';
 import 'package:loan_manager/methods/calculate_emi.dart';
 import 'package:loan_manager/methods/calculate_enddate.dart';
+import 'package:loan_manager/methods/string_functions.dart';
 import 'package:loan_manager/models/loan.dart';
 import 'package:loan_manager/models/user.dart';
 import 'package:loan_manager/widgets/drawer.dart';
@@ -14,14 +15,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class AddLoan extends StatefulWidget {
+  @override
+  _AddLoanState createState() => _AddLoanState();
+
   final Loan loan;
   final String loanId;
   final Function actionCallback;
 
-  const AddLoan({this.loan, this.loanId, this.actionCallback});
-
-  @override
-  _AddLoanState createState() => _AddLoanState();
+  AddLoan({this.loan, this.loanId, this.actionCallback})
+      : super(key: Key('AddLoan'));
 }
 
 class _AddLoanState extends State<AddLoan> {
@@ -69,7 +71,11 @@ class _AddLoanState extends State<AddLoan> {
   }
 
   goTo(int step) {
-    setState(() => currentStep = step);
+    if (_fbKey.currentState.saveAndValidate()) {
+      setState(() {
+        currentStep = step;
+      });
+    }
   }
 
   _getLoginInformation() async {
@@ -106,73 +112,125 @@ class _AddLoanState extends State<AddLoan> {
         ),
       ),
       body: Column(
+        key: UniqueKey(),
         children: <Widget>[
           Expanded(
             child: FormBuilder(
               key: _fbKey,
               initialValue: {
-                'loanType': widget.loan?.loanType != null
+                'loanType': widget.loanId != null
                     ? widget.loan?.loanType
-                    : 'Other Loan',
-                'accountName': widget.loan?.accountName != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['loanType']
+                        : 'Other Loan',
+                'accountName': widget.loanId != null
                     ? widget.loan?.accountName
-                    : '',
-                'amount': widget.loan?.amount != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['accountName']
+                        : '',
+                'amount': widget.loanId != null
                     ? widget.loan?.amount.toString()
-                    : '',
-                'tenure': widget.loan?.tenure != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['amount']
+                        : '',
+                'tenure': widget.loanId != null
                     ? (widget.loan.tenure / 12).toString()
-                    : '',
-                'interest': widget.loan?.interest != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['tenure']
+                        : '',
+                'interest': widget.loanId != null
                     ? widget.loan?.interest.toString()
-                    : '',
-                'startDate': widget.loan?.startDate ?? widget.loan?.startDate,
-                'accountNumber': widget.loan?.accountNumber != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['interest']
+                        : '',
+                'startDate': widget.loanId != null
+                    ? widget.loan?.startDate
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['startDate']
+                        : new DateTime.now(),
+                'accountNumber': widget.loanId != null
                     ? widget.loan?.accountNumber
-                    : null,
-                'bankName': widget.loan?.bankName != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['accountNumber']
+                        : null,
+                'bankName': widget.loanId != null
                     ? widget.loan?.bankName
-                    : null,
-                'phone': widget.loan?.phone != null ? widget.loan?.phone : null,
-                'email': widget.loan?.email != null ? widget.loan?.email : null,
-                'contactPerson': widget.loan?.contactPerson != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['bankName']
+                        : null,
+                'phone': widget.loanId != null
+                    ? widget.loan?.phone
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['phone']
+                        : null,
+                'email': widget.loanId != null
+                    ? widget.loan?.email
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['email']
+                        : null,
+                'contactPerson': widget.loanId != null
                     ? widget.loan?.contactPerson
-                    : null,
-                'otherLoanInfo': widget.loan?.otherLoanInfo != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['contactPerson']
+                        : null,
+                'otherLoanInfo': widget.loanId != null
                     ? widget.loan?.otherLoanInfo
-                    : null,
-                'partPayment': widget.loan?.partPayment != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['otherLoanInfo']
+                        : null,
+                'partPayment': widget.loanId != null
                     ? widget.loan?.partPayment.toString()
-                    : null,
-                'advancePayment': widget.loan?.advancePayment != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['partPayment']
+                        : null,
+                'advancePayment': widget.loanId != null
                     ? widget.loan?.advancePayment.toString()
-                    : null,
-                'processingFee': widget.loan?.processingFee != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['advancePayment']
+                        : null,
+                'processingFee': widget.loanId != null
                     ? widget.loan?.processingFee.toString()
-                    : null,
-                'insuranceCharges': widget.loan?.insuranceCharges != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['processingFee']
+                        : null,
+                'insuranceCharges': widget.loanId != null
                     ? widget.loan?.insuranceCharges.toString()
-                    : null,
-                'otherCharges': widget.loan?.otherCharges != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['insuranceCharges']
+                        : null,
+                'otherCharges': widget.loanId != null
                     ? widget.loan?.otherCharges.toString()
-                    : null,
-                'moratorium': widget.loan?.moratorium != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['otherCharges']
+                        : null,
+                'moratorium': widget.loanId != null
                     ? widget.loan?.moratorium
-                    : false,
-                'moratoriumMonth': widget.loan?.moratoriumMonth != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['moratorium']
+                        : false,
+                'moratoriumMonth': widget.loanId != null
                     ? widget.loan?.moratoriumMonth.toString()
-                    : '0',
-                'moratoriumType': widget.loan?.moratoriumType != null
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['moratoriumMonth']
+                        : '0',
+                'moratoriumType': widget.loanId != null
                     ? widget.loan?.moratoriumType
-                    : null,
+                    : _fbKey.currentState != null
+                        ? _fbKey.currentState.value['moratoriumType']
+                        : null,
               },
               child: Stepper(
                 type: StepperType.horizontal,
+                currentStep: currentStep ?? 0,
+                onStepContinue: next,
+                onStepTapped: (step) => goTo(step),
+                onStepCancel: cancel,
                 steps: [
                   Step(
-                    title: Text('Required'),
+                    title: Text('Required*'),
                     isActive: currentStep == 0 ? true : false,
                     content: Column(
+                      key: UniqueKey(),
                       children: [
                         FormBuilderDropdown(
                           // autofocus: true,
@@ -183,7 +241,6 @@ class _AddLoanState extends State<AddLoan> {
                             prefixIcon:
                                 Icon(MaterialCommunityIcons.account_search),
                           ),
-                          // initialValue: 'Male',
                           hint: Text('Loan Type'),
                           validators: [FormBuilderValidators.required()],
                           items: [
@@ -257,7 +314,7 @@ class _AddLoanState extends State<AddLoan> {
                           validators: [
                             FormBuilderValidators.required(),
                             FormBuilderValidators.numeric(),
-                            FormBuilderValidators.min(0.3),
+                            FormBuilderValidators.min(1),
                             FormBuilderValidators.max(40 * 12),
                           ],
                           onEditingComplete: () => FocusScope.of(context)
@@ -326,6 +383,7 @@ class _AddLoanState extends State<AddLoan> {
                     isActive: currentStep == 1 ? true : false,
                     title: Text('Bank Details'),
                     content: Column(
+                      key: UniqueKey(),
                       children: [
                         FormBuilderTextField(
                           attribute: "accountNumber",
@@ -413,6 +471,7 @@ class _AddLoanState extends State<AddLoan> {
                     isActive: currentStep == 2 ? true : false,
                     title: Text('Other'),
                     content: Column(
+                      key: UniqueKey(),
                       children: [
                         FormBuilderTextField(
                           attribute: "partPayment",
@@ -520,10 +579,6 @@ class _AddLoanState extends State<AddLoan> {
                     ),
                   )
                 ],
-                currentStep: currentStep,
-                onStepContinue: next,
-                onStepTapped: (step) => goTo(step),
-                onStepCancel: cancel,
               ),
             ),
           ),
@@ -537,11 +592,13 @@ class _AddLoanState extends State<AddLoan> {
                 textColor: Colors.white,
                 child: Text("Save"),
                 onPressed: () {
+                  print(_fbKey.currentState.value['processingFee']);
                   if (_fbKey.currentState.saveAndValidate()) {
                     double amount =
                         double.parse(_fbKey.currentState.value['amount']);
                     int tenure =
-                        int.parse(_fbKey.currentState.value['tenure']) *
+                        double.parse(_fbKey.currentState.value['tenure'])
+                                .round() *
                             tenureMultiple;
                     double interest =
                         double.parse(_fbKey.currentState.value['interest']);
@@ -562,13 +619,16 @@ class _AddLoanState extends State<AddLoan> {
                       email: _fbKey.currentState.value['email'],
                       contactPerson: _fbKey.currentState.value['contactPerson'],
                       otherLoanInfo: _fbKey.currentState.value['otherLoanInfo'],
-                      processingFee: _fbKey.currentState.value['processingFee'],
-                      otherCharges: _fbKey.currentState.value['otherCharges'],
-                      partPayment: _fbKey.currentState.value['partPayment'],
-                      advancePayment:
-                          _fbKey.currentState.value['advancePayment'],
-                      insuranceCharges:
-                          _fbKey.currentState.value['insuranceCharges'],
+                      processingFee: double.parse(emptyStringPlaceholder(
+                          _fbKey.currentState.value['processingFee'], '0')),
+                      otherCharges: double.parse(emptyStringPlaceholder(
+                          _fbKey.currentState.value['otherCharges'], '0')),
+                      partPayment: double.parse(emptyStringPlaceholder(
+                          _fbKey.currentState.value['partPayment'], '0')),
+                      advancePayment: double.parse(emptyStringPlaceholder(
+                          _fbKey.currentState.value['advancePayment'], '0')),
+                      insuranceCharges: double.parse(emptyStringPlaceholder(
+                          _fbKey.currentState.value['insuranceCharges'], '0')),
                       moratorium: _fbKey.currentState.value['moratorium'],
                       moratoriumMonth: int.parse(
                           _fbKey.currentState.value['moratoriumMonth']),
@@ -587,8 +647,8 @@ class _AddLoanState extends State<AddLoan> {
                       loan.saveLoan();
                       showToast("Loan Saved Successfully ✔");
                     }
-
-                    widget.actionCallback(true);
+                    widget.actionCallback != null ??
+                        widget.actionCallback(true);
                     Navigator.pop(context, true);
                   }
                 },
