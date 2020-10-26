@@ -94,7 +94,6 @@ class _AddLendState extends State<AddLend> {
                     ? widget.lend?.otherLoanInfo
                     : '',
               },
-              autovalidate: false,
               child: ListView(
                 padding: EdgeInsets.all(10.0),
                 children: [

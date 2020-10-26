@@ -14,14 +14,3 @@ Future<Function> removeLoginInformation() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.clear();
 }
-
-// Future<User> get getLoginInformation async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   final user = prefs.getString('user');
-
-//   if (user != null) {
-//     return User.fromJson(jsonDecode(user));
-//   }
-
-//   return new User(null, null, null);
-// }

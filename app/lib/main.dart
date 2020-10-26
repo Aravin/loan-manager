@@ -12,8 +12,8 @@ FirebaseAnalytics analytics;
 
 main() {
   analytics = FirebaseAnalytics();
-  Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  FirebaseCrashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(App());

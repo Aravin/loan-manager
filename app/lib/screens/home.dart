@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +13,6 @@ import 'package:loan_manager/screens/loan/add.dart';
 import 'package:loan_manager/screens/loan/list.dart';
 import 'package:loan_manager/widgets/bottom_navigation_bar.dart';
 import 'package:loan_manager/widgets/drawer.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

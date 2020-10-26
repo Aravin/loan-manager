@@ -47,15 +47,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(MaterialIcons.account_balance),
-            title: Text('Borrowed'),
+            label: 'Borrowed',
           ),
           BottomNavigationBarItem(
             icon: Icon(MaterialIcons.account_balance_wallet),
-            title: Text('Lend'),
+            label: 'Lend',
           ),
         ],
         currentIndex: widget.currentIndex,

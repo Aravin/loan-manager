@@ -398,8 +398,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _success;
-  String _userEmail;
+  bool _success = false;
+  String _userEmail = '';
 
   @override
   Widget build(BuildContext context) {

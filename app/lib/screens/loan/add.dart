@@ -166,7 +166,6 @@ class _AddLoanState extends State<AddLoan> {
                     ? widget.loan?.moratoriumType
                     : null,
               },
-              autovalidate: false,
               child: Stepper(
                 type: StepperType.horizontal,
                 steps: [
